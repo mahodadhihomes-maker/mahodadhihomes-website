@@ -390,13 +390,31 @@
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // Responsive 3D building layout and camera angles
-    if (window.innerWidth < 992) {
+    // Responsive 3D building layout, scaling, and camera angles
+    if (window.innerWidth < 480) {
+      // Small Mobile
+      building.scale.set(0.52, 0.52, 0.52); // Scale down building on mobile
       building.position.x = 0;
-      baseBuildingY = -2.2; // Push building down further to fit below centered text
-      camera.position.set(0, 6, 24); // Straight-on view centered on mobile
+      baseBuildingY = -3.8; // Lower the building further down
+      camera.position.set(0, 5, 26); // Shift camera back and down
+      camera.lookAt(0, 1, 0);
+    } else if (window.innerWidth < 768) {
+      // Mobile
+      building.scale.set(0.58, 0.58, 0.58);
+      building.position.x = 0;
+      baseBuildingY = -3.2;
+      camera.position.set(0, 5, 25);
+      camera.lookAt(0, 1.5, 0);
+    } else if (window.innerWidth < 992) {
+      // Tablet
+      building.scale.set(0.75, 0.75, 0.75);
+      building.position.x = 0;
+      baseBuildingY = -2.5;
+      camera.position.set(0, 6, 24);
       camera.lookAt(0, 2, 0);
     } else {
+      // Desktop
+      building.scale.set(1, 1, 1);
       building.position.x = 3.2;
       baseBuildingY = -0.3; // Offset to the right side on desktop
       camera.position.set(12, 8, 18); // Angled perspective on desktop

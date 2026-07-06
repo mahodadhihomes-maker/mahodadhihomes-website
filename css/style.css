@@ -2139,6 +2139,12 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   /* Hero */
+  .hero-section {
+    align-items: flex-start;
+    padding-top: 130px; /* Offset for fixed navbar + top alignment */
+    min-height: 820px; /* Ensure enough scrollable height on mobile for 3D building */
+  }
+
   .hero-content {
     padding: 0 20px;
     text-align: center;
