@@ -390,13 +390,17 @@
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // Responsive 3D building layout positioning
+    // Responsive 3D building layout and camera angles
     if (window.innerWidth < 992) {
       building.position.x = 0;
-      baseBuildingY = -1.2; // Centered on mobiles/tablets, slightly lower
+      baseBuildingY = -2.2; // Push building down further to fit below centered text
+      camera.position.set(0, 6, 24); // Straight-on view centered on mobile
+      camera.lookAt(0, 2, 0);
     } else {
       building.position.x = 3.2;
-      baseBuildingY = -0.3; // Offset to the right half on desktop
+      baseBuildingY = -0.3; // Offset to the right side on desktop
+      camera.position.set(12, 8, 18); // Angled perspective on desktop
+      camera.lookAt(0, 3, 0);
     }
     building.position.y = baseBuildingY;
   }
