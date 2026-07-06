@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Global Error Catcher for Debugging -->
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            var div = document.getElementById('debug-error-banner') || document.createElement('div');
+            div.id = 'debug-error-banner';
+            div.style.position = 'fixed';
+            div.style.top = '0';
+            div.style.left = '0';
+            div.style.width = '100%';
+            div.style.background = '#dc3545';
+            div.style.color = '#fff';
+            div.style.padding = '15px';
+            div.style.zIndex = '99999';
+            div.style.fontSize = '14px';
+            div.style.fontFamily = 'monospace';
+            div.style.borderBottom = '3px solid #721c24';
+            div.style.maxHeight = '200px';
+            div.style.overflowY = 'auto';
+            div.style.boxShadow = '0 4px 10px rgba(0,0,0,0.3)';
+            div.innerHTML = '<strong>JS Error:</strong> ' + message + ' at ' + (source ? source.split("/").pop() : "unknown") + ':' + lineno + ':' + colno + 
+                            '<br><button onclick="this.parentNode.remove()" style="margin-top:5px;padding:3px 8px;background:#fff;color:#000;border:none;cursor:pointer;border-radius:3px;">Dismiss</button>';
+            document.body.appendChild(div);
+            return false;
+        };
+        window.addEventListener('error', function(e) {
+            if (e.target && (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK')) {
+                var div = document.getElementById('debug-resource-banner') || document.createElement('div');
+                div.id = 'debug-resource-banner';
+                div.style.position = 'fixed';
+                div.style.top = '50px';
+                div.style.left = '0';
+                div.style.width = '100%';
+                div.style.background = '#ffc107';
+                div.style.color = '#000';
+                div.style.padding = '15px';
+                div.style.zIndex = '99998';
+                div.style.fontSize = '14px';
+                div.style.fontFamily = 'sans-serif';
+                div.style.boxShadow = '0 4px 10px rgba(0,0,0,0.3)';
+                div.innerHTML = '<strong>Resource Load Failure:</strong> Failed to load ' + (e.target.src || e.target.href).split("/").pop() +
+                                '<br><button onclick="this.parentNode.remove()" style="margin-top:5px;padding:3px 8px;background:#000;color:#fff;border:none;cursor:pointer;border-radius:3px;">Dismiss</button>';
+                document.body.appendChild(div);
+            }
+        }, true);
+    </script>
+    <meta name="keywords" content="low cost houses for sale in Bhubaneswar, 2BHK flats in affordable price, 3BHK apartments, RERA approved residential projects, apartments for sale near NH-16, apartments near Cuttack–Bhubaneswar NH, Mahodadhi Homes, real estate Bhubaneswar">
+    <meta name="description" content="Mahodadhi Homes Pvt. Ltd. is among the best real estate companies in Bhubaneswar, offering low-cost houses, 2BHK & 3BHK apartments, and RERA approved residential projects. Comfort, connectivity, and value — making dreams reality!">
+    <meta property="og:title" content="Mahodadhi Homes – Premium Real Estate in Bhubaneswar, Odisha">
+    <meta property="og:description" content="Your trusted real estate partner in Odisha. Quality homes, RERA approved projects, 2BHK & 3BHK apartments near NH-16.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mahodadhihomes.com">
+    <title>Best Real Estate & Residential Projects in Bhubaneswar | Mahodadhi Homes</title>
+    <link rel="icon" type="image/png" href="https://mahodadhihomes.com/front-assets/images/logo.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ============ HEADER / NAVBAR ============ -->
+    <header id="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <a class="nav-logo" href="#hero">
+                    <img src="https://mahodadhihomes.com/front-assets/images/logo.png" alt="Mahodadhi Homes Logo">
+                </a>
+
+                <ul class="nav-menu" id="navMenu">
+                    <li class="nav-item"><a class="nav-link active" href="#hero">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#amenities">Amenities</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonials</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                </ul>
+
+                <div class="nav-actions">
+                    <a href="tel:+919237388271" class="nav-phone" id="navPhone">
+                        <i class="fas fa-phone"></i>
+                        <span>+91 92373 88271</span>
+                    </a>
+                    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- ============ HERO SECTION ============ -->
+        <section id="hero" class="hero-section">
+            <canvas id="hero-canvas"></canvas>
+
+            <!-- Animated gradient overlay -->
+            <div class="hero-gradient-overlay"></div>
+
+            <!-- Floating particles -->
+            <div class="hero-particles" id="heroParticles">
+                <div class="particle" style="--x: 10%; --y: 20%; --size: 4px; --duration: 6s; --delay: 0s;"></div>
+                <div class="particle" style="--x: 25%; --y: 60%; --size: 6px; --duration: 8s; --delay: 1s;"></div>
+                <div class="particle" style="--x: 40%; --y: 30%; --size: 3px; --duration: 7s; --delay: 0.5s;"></div>
+                <div class="particle" style="--x: 55%; --y: 80%; --size: 5px; --duration: 9s; --delay: 2s;"></div>
+                <div class="particle" style="--x: 70%; --y: 15%; --size: 4px; --duration: 6.5s; --delay: 1.5s;"></div>
+                <div class="particle" style="--x: 85%; --y: 45%; --size: 7px; --duration: 10s; --delay: 0.8s;"></div>
+                <div class="particle" style="--x: 15%; --y: 75%; --size: 3px; --duration: 7.5s; --delay: 3s;"></div>
+                <div class="particle" style="--x: 65%; --y: 55%; --size: 5px; --duration: 8.5s; --delay: 2.5s;"></div>
+                <div class="particle" style="--x: 90%; --y: 70%; --size: 4px; --duration: 6s; --delay: 1.2s;"></div>
+                <div class="particle" style="--x: 30%; --y: 90%; --size: 6px; --duration: 9.5s; --delay: 0.3s;"></div>
+                <div class="particle" style="--x: 50%; --y: 10%; --size: 3px; --duration: 7s; --delay: 4s;"></div>
+                <div class="particle" style="--x: 80%; --y: 85%; --size: 5px; --duration: 8s; --delay: 1.8s;"></div>
+            </div>
+
+            <!-- Decorative floating geometric shapes -->
+            <div class="hero-shapes">
+                <div class="shape shape-ring" style="--left: 75%; --top: 15%;"></div>
+                <div class="shape shape-ring" style="--left: 85%; --top: 65%;"></div>
+                <div class="shape shape-dot" style="--left: 70%; --top: 80%;"></div>
+                <div class="shape shape-dot" style="--left: 60%; --top: 10%;"></div>
+                <div class="shape shape-cross" style="--left: 80%; --top: 40%;"></div>
+                <div class="shape shape-diamond" style="--left: 65%; --top: 50%;"></div>
+            </div>
+
+            <!-- Glowing orbs -->
+            <div class="hero-glow hero-glow-1"></div>
+            <div class="hero-glow hero-glow-2"></div>
+            <div class="hero-glow hero-glow-3"></div>
+
+            <div class="hero-content">
+                <div class="hero-top-line">
+                    <span class="hero-badge">
+                        <span class="badge-dot"></span>
+                        Your Trusted Real Estate Partner in Odisha
+                    </span>
+                </div>
+
+                <h1 class="hero-title">
+                    <span class="hero-title-line">Building Your</span>
+                    <span class="hero-title-line hero-title-highlight">
+                        <span class="text-gold text-shimmer">Dream Home</span>
+                    </span>
+                    <span class="hero-title-line hero-title-small">with Mahodadhi Homes</span>
+                </h1>
+
+                <p class="hero-subtitle">Quality, trust, and thoughtfully designed living spaces across Bhubaneswar, Odisha. From affordable 2BHK flats to spacious 3BHK apartments — your dream home awaits.</p>
+
+                <div class="hero-cta">
+                    <a href="#projects" class="btn btn-primary btn-glow" id="heroExploreBtn">
+                        <i class="fas fa-building"></i>&nbsp; Explore Projects
+                        <span class="btn-shine"></span>
+                    </a>
+                    <a href="#contact" class="btn btn-outline btn-outline-hero" id="heroContactBtn">
+                        <i class="fas fa-phone-alt"></i>&nbsp; Contact Us
+                    </a>
+                </div>
+
+                <!-- Trust badges -->
+                <div class="hero-trust-badges">
+                    <div class="trust-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>RERA Approved</span>
+                    </div>
+                    <div class="trust-divider"></div>
+                    <div class="trust-badge">
+                        <i class="fas fa-award"></i>
+                        <span>ISO Certified</span>
+                    </div>
+                    <div class="trust-divider"></div>
+                    <div class="trust-badge">
+                        <i class="fas fa-handshake"></i>
+                        <span>100% Transparent</span>
+                    </div>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-icon-wrap"><i class="fas fa-city"></i></div>
+                        <span class="stat-number" data-count="4">0</span><span class="stat-suffix">+</span>
+                        <span class="stat-label">Projects</span>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon-wrap"><i class="fas fa-home"></i></div>
+                        <span class="stat-number" data-count="200">0</span><span class="stat-suffix">+</span>
+                        <span class="stat-label">Happy Families</span>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon-wrap"><i class="fas fa-check-circle"></i></div>
+                        <span class="stat-number" data-count="100">0</span><span class="stat-suffix">%</span>
+                        <span class="stat-label">RERA Approved</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Floating Glass Cards (Desktop only for premium look, hidden on small devices via CSS) -->
+            <div class="hero-glass-cards">
+                <div class="glass-card glass-card-1">
+                    <div class="glass-card-badge"><span class="badge-dot dot-ongoing"></span>Ongoing</div>
+                    <div class="glass-card-header">
+                        <div class="glass-card-icon-wrap"><i class="fas fa-city"></i></div>
+                        <div>
+                            <h4>Mahodadhi Galaxy</h4>
+                            <p>Smart Apartments</p>
+                        </div>
+                    </div>
+                    <p class="glass-card-desc">Lush green spaces, EV charging points & rooftop pool.</p>
+                </div>
+
+                <div class="glass-card glass-card-2">
+                    <div class="glass-card-badge"><span class="badge-dot dot-completed"></span>Completed</div>
+                    <div class="glass-card-header">
+                        <div class="glass-card-icon-wrap"><i class="fas fa-map-location-dot"></i></div>
+                        <div>
+                            <h4>Barsha Villa</h4>
+                            <p>Bhubaneswar, Odisha</p>
+                        </div>
+                    </div>
+                    <p class="glass-card-desc">Premium duplex complex close to NH-16 connectivity.</p>
+                </div>
+
+                <div class="glass-card glass-card-3">
+                    <div class="glass-card-badge"><span class="badge-dot dot-rera"></span>Approved</div>
+                    <div class="glass-card-header">
+                        <div class="glass-card-icon-wrap"><i class="fas fa-shield-halved"></i></div>
+                        <div>
+                            <h4>RERA Regd.</h4>
+                            <p>Secure Investment</p>
+                        </div>
+                    </div>
+                    <p class="glass-card-desc">100% legal compliance for peace of mind.</p>
+                </div>
+            </div>
+
+            <div class="hero-scroll-indicator">
+                <div class="scroll-mouse">
+                    <div class="scroll-wheel"></div>
+                </div>
+                <span>Scroll to explore</span>
+            </div>
+        </section>
+
+        <!-- ============ ABOUT SECTION ============ -->
+        <section id="about" class="about-section">
+            <div class="container">
+                <div class="about-grid">
+                    <div class="about-content" data-animate="slide-right">
+                        <span class="section-subtitle">About Mahodadhi Homes</span>
+                        <h2 class="section-title">Quality and affordability are what we are best known for.</h2>
+                        <p class="about-text">
+                            Your home journey begins with Mahodadhi Homes Pvt. Ltd., a name known for quality, trust, and thoughtfully designed living spaces. We offer a diverse range of options — from low cost houses for sale in Bhubaneswar and 2BHK flats at affordable prices to spacious 3BHK apartments and RERA approved residential projects that combine comfort, style, and value.
+                        </p>
+                        <p class="about-text">
+                            Our portfolio includes well-connected communities like apartments for sale near NH-16 and apartments near the Cuttack–Bhubaneswar NH, catering to varied needs and budgets. We create thoughtfully designed spaces that enhance lifestyles and promote a better, more sustainable future.
+                        </p>
+                        <div class="about-highlights">
+                            <div class="highlight-item">
+                                <div class="highlight-icon"><i class="fas fa-shield-alt"></i></div>
+                                <div>
+                                    <strong>RERA Approved</strong>
+                                    <p>All projects fully compliant</p>
+                                </div>
+                            </div>
+                            <div class="highlight-item">
+                                <div class="highlight-icon"><i class="fas fa-road"></i></div>
+                                <div>
+                                    <strong>Prime Locations</strong>
+                                    <p>Near NH-16 connectivity</p>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#projects" class="btn btn-primary" id="aboutKnowMoreBtn">Know More</a>
+                    </div>
+
+                    <div class="about-visual" data-animate="slide-left">
+                        <div class="about-image-wrapper">
+                            <img src="https://mahodadhihomes.com/front-assets/images/artboard_1_720.png" alt="Mahodadhi Homes Building">
+                            <a href="https://youtu.be/UIEn63w2jOA" target="_blank" class="video-play-btn" id="aboutVideoBtn" title="Watch Our Video">
+                                <i class="fas fa-play"></i>
+                                <span class="pulse-ring"></span>
+                            </a>
+                        </div>
+                        <div class="about-experience-badge">
+                            <span class="badge-number">5+</span>
+                            <span class="badge-text">Years of<br>Excellence</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ PROJECTS SECTION ============ -->
+        <section id="projects" class="projects-section">
+            <div class="container">
+                <div class="section-header" data-animate="fade-up">
+                    <span class="section-subtitle">Our Projects</span>
+                    <h2 class="section-title">Crafting Homes That Inspire</h2>
+                    <p class="section-description">Explore our portfolio of carefully designed residential projects across Bhubaneswar, each built with quality, comfort, and modern living in mind.</p>
+                </div>
+
+                <div class="projects-grid">
+                    <!-- Project 1: Barsha Villa -->
+                    <div class="project-card">
+                        <div class="project-image">
+                            <img src="https://mahodadhihomes.com/projects/images/1739961080_BARSHA.png" alt="Barsha Villa">
+                            <span class="project-status status-completed">Completed</span>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">Barsha Villa</h3>
+                            <p class="project-location"><i class="fas fa-map-marker-alt"></i> Bhubaneswar, Odisha</p>
+                            <p class="project-description">An elegantly designed duplex project that blends contemporary luxury with spacious living, offering a perfect retreat while connecting you to the vibrant community around.</p>
+                            <div class="project-actions">
+                                <a href="https://mahodadhihomes.com/project/59/details" class="btn btn-details" id="barshaDetailsBtn" target="_blank">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 2: Mahodadhi Avenue -->
+                    <div class="project-card">
+                        <div class="project-image">
+                            <img src="https://mahodadhihomes.com/projects/images/1739962006_mahodadhi-avenue-front-view (1).jpg" alt="Mahodadhi Avenue">
+                            <span class="project-status status-completed">Completed</span>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">Mahodadhi Avenue</h3>
+                            <p class="project-location"><i class="fas fa-map-marker-alt"></i> Bhubaneswar, Odisha</p>
+                            <p class="project-description">A meticulously planned residential apartment complex designed to offer modern amenities and ample space, providing you with the essence of significance in the community.</p>
+                            <div class="project-actions">
+                                <a href="https://mahodadhihomes.com/project/61/details" class="btn btn-details" id="avenueDetailsBtn" target="_blank">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 3: Mahodadhi Plaza -->
+                    <div class="project-card">
+                        <div class="project-image">
+                            <img src="https://mahodadhihomes.com/projects/images/1747308830_plaza 2.jpeg" alt="Mahodadhi Plaza">
+                            <span class="project-status status-completed">Completed</span>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">Mahodadhi Plaza</h3>
+                            <p class="project-location"><i class="fas fa-map-marker-alt"></i> Atala, Hanspal, Bhubaneswar, Odisha 752101</p>
+                            <p class="project-description">Thoughtfully crafted to offer the perfect blend of modern design and spacious living, providing you with a home that reflects your aspirations and sense of belonging.</p>
+                            <div class="project-actions">
+                                <a href="https://mahodadhihomes.com/project/69/details" class="btn btn-details" id="plazaDetailsBtn" target="_blank">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 4: Mahodadhi Galaxy -->
+                    <div class="project-card">
+                        <div class="project-image">
+                            <img src="https://mahodadhihomes.com/projects/images/1760607685_11_Front_optimized_1500.png" alt="Mahodadhi Galaxy">
+                            <span class="project-status status-ongoing">Ongoing</span>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">Mahodadhi Galaxy</h3>
+                            <p class="project-location"><i class="fas fa-map-marker-alt"></i> Bhubaneswar, Odisha</p>
+                            <p class="project-description">Our latest residential project offering modern living spaces with premium amenities and excellent connectivity — a galaxy of possibilities for your dream home.</p>
+                            <div class="project-actions">
+                                <a href="https://mahodadhihomes.com/project/74/details" class="btn btn-details" id="galaxyDetailsBtn" target="_blank">View Details</a>
+                                <button class="brochure-btn" id="galaxyBrochureBtn"><i class="fas fa-download"></i>&nbsp; Brochure</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ AMENITIES SECTION ============ -->
+        <section id="amenities" class="amenities-section">
+            <div class="container">
+                <div class="section-header" data-animate="fade-up">
+                    <span class="section-subtitle section-subtitle-light">Premium Amenities</span>
+                    <h2 class="section-title section-title-light">Indulge in a Suite of Luxurious Amenities</h2>
+                    <p class="section-description section-description-light">Our projects are thoughtfully designed to blend comfort, style, and functionality, ensuring a home that meets your needs and exceeds your expectations.</p>
+                </div>
+
+                <div class="amenities-grid">
+                    <div class="amenity-card">
+                        <div class="amenity-icon"><i class="fas fa-swimming-pool"></i></div>
+                        <h3 class="amenity-title">Swimming Pool</h3>
+                        <p class="amenity-description">Dive into relaxation with our pristine swimming pool — the cleanest in the neighborhood, perfect for leisure and fitness.</p>
+                    </div>
+                    <div class="amenity-card">
+                        <div class="amenity-icon"><i class="fas fa-charging-station"></i></div>
+                        <h3 class="amenity-title">EV Charging Point</h3>
+                        <p class="amenity-description">Future-ready living with dedicated EV charging stations for both cars and bikes right at your doorstep.</p>
+                    </div>
+                    <div class="amenity-card">
+                        <div class="amenity-icon"><i class="fas fa-video"></i></div>
+                        <h3 class="amenity-title">CCTV Surveillance</h3>
+                        <p class="amenity-description">Round-the-clock CCTV monitoring across the entire property ensures maximum safety and peace of mind for your family.</p>
+                    </div>
+                    <div class="amenity-card">
+                        <div class="amenity-icon"><i class="fas fa-elevator"></i></div>
+                        <h3 class="amenity-title">Fast Lift System</h3>
+                        <p class="amenity-description">High-speed elevator system designed to save your precious time with smooth, quiet, and reliable operation.</p>
+                    </div>
+                    <div class="amenity-card">
+                        <div class="amenity-icon"><i class="fas fa-spa"></i></div>
+                        <h3 class="amenity-title">Rooftop Yoga Deck</h3>
+                        <p class="amenity-description">Elevate your wellness routine with a serene rooftop yoga deck — breathe fresh air and find your inner balance.</p>
+                    </div>
+                    <div class="amenity-card">
+                        <div class="amenity-icon"><i class="fas fa-leaf"></i></div>
+                        <h3 class="amenity-title">Rooftop Garden</h3>
+                        <p class="amenity-description">A lush rooftop garden that fosters positive energy and brings nature closer to your living space.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ SERVICES SECTION ============ -->
+        <section id="services" class="services-section">
+            <div class="container">
+                <div class="section-header" data-animate="fade-up">
+                    <span class="section-subtitle">How We Help</span>
+                    <h2 class="section-title">Discover How We Can Help</h2>
+                    <p class="section-description">Explore our services and find the right solution for your dream home journey.</p>
+                </div>
+
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <h3 class="service-title">Find Out How Much You Can Afford</h3>
+                        <p class="service-text">We'll help you estimate your budget range and save to your buyer profile to streamline your home search from the very start.</p>
+                        <a href="#contact" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <h3 class="service-title">Understand Your Monthly Costs</h3>
+                        <p class="service-text">Get a clear picture of all monthly expenses including EMI, maintenance, and utilities — plan your finances with confidence.</p>
+                        <a href="#contact" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-hand-holding-usd"></i>
+                        </div>
+                        <h3 class="service-title">Get Help With Your Down Payment</h3>
+                        <p class="service-text">A well-planned down payment can secure better interest rates and lower your overall loan burden. Let us guide you through the process.</p>
+                        <a href="#contact" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ TESTIMONIALS SECTION ============ -->
+        <section id="testimonials" class="testimonials-section">
+            <div class="container">
+                <div class="section-header" data-animate="fade-up">
+                    <span class="section-subtitle">Testimonials</span>
+                    <h2 class="section-title">What Our Homeowners Say</h2>
+                    <p class="section-description">Real stories from real families who found their dream homes with Mahodadhi Homes.</p>
+                </div>
+
+                <div class="testimonial-carousel" id="testimonialCarousel">
+                    <div class="testimonial-track" id="testimonialTrack">
+                        <!-- Testimonial 1 -->
+                        <div class="testimonial-slide">
+                            <div class="testimonial-card-inner">
+                                <div class="testimonial-quote">"</div>
+                                <p class="testimonial-text">We had a wonderful experience purchasing our apartment at Mahodadhi Homes. The property offers seamless connectivity across the city, along with all the modern amenities a growing family could ask for. We'd highly recommend visiting their apartments before making any other decision.</p>
+                                <div class="testimonial-author">
+                                    <div class="testimonial-avatar-placeholder"><i class="fas fa-user"></i></div>
+                                    <div>
+                                        <p class="testimonial-name">Arakhita Parida</p>
+                                        <p class="testimonial-rating">⭐⭐⭐⭐⭐ <span>5.0</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Testimonial 2 -->
+                        <div class="testimonial-slide">
+                            <div class="testimonial-card-inner">
+                                <div class="testimonial-quote">"</div>
+                                <p class="testimonial-text">Mahodadhi Homes helped us find the perfect home that fit our budget beautifully. The spacious interiors and modern facilities have truly transformed our daily living. Our entire family is delighted with our new Mahodadhi apartment — it feels like home from day one.</p>
+                                <div class="testimonial-author">
+                                    <div class="testimonial-avatar-placeholder"><i class="fas fa-user"></i></div>
+                                    <div>
+                                        <p class="testimonial-name">Binod Behera</p>
+                                        <p class="testimonial-rating">⭐⭐⭐⭐⭐ <span>5.0</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Testimonial 3 -->
+                        <div class="testimonial-slide">
+                            <div class="testimonial-card-inner">
+                                <div class="testimonial-quote">"</div>
+                                <p class="testimonial-text">Among the finest builders in Bhubaneswar, hands down. The team is incredibly friendly and supportive throughout the entire buying journey. If you're looking for a stress-free home purchase experience, Mahodadhi Homes is the name to trust.</p>
+                                <div class="testimonial-author">
+                                    <div class="testimonial-avatar-placeholder"><i class="fas fa-user"></i></div>
+                                    <div>
+                                        <p class="testimonial-name">Sudarsan Behari</p>
+                                        <p class="testimonial-rating">⭐⭐⭐⭐½ <span>4.5</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Testimonial 4 -->
+                        <div class="testimonial-slide">
+                            <div class="testimonial-card-inner">
+                                <div class="testimonial-quote">"</div>
+                                <p class="testimonial-text">Purchasing our flat from Mahodadhi Homes was one of the best decisions we've made. The location is fantastic, the amenities are exactly what we needed, and the overall value is hard to beat. We wholeheartedly recommend them to any prospective buyer.</p>
+                                <div class="testimonial-author">
+                                    <div class="testimonial-avatar-placeholder"><i class="fas fa-user"></i></div>
+                                    <div>
+                                        <p class="testimonial-name">Islam Shaikh</p>
+                                        <p class="testimonial-rating">⭐⭐⭐⭐½ <span>4.5</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-controls">
+                        <button class="carousel-btn carousel-prev" id="carouselPrev" aria-label="Previous testimonial">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="carousel-dots" id="carouselDots"></div>
+                        <button class="carousel-btn carousel-next" id="carouselNext" aria-label="Next testimonial">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ FAQ SECTION ============ -->
+        <section id="faq" class="faq-section">
+            <div class="container">
+                <div class="section-header" data-animate="fade-up">
+                    <span class="section-subtitle">FAQ</span>
+                    <h2 class="section-title">Frequently Asked Questions</h2>
+                    <p class="section-description">Everything you need to know about buying your dream home with Mahodadhi Homes.</p>
+                </div>
+
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false" id="faq1">
+                            <span>I'm looking for a house for purchase in Bhubaneswar. Can you help?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Absolutely! We offer beautiful homes across Bhubaneswar, from peaceful neighborhoods to prime locations near NH-16, designed to suit every budget. Our team will guide you through the entire process.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false" id="faq2">
+                            <span>Which is the best real estate company in Bhubaneswar?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Mahodadhi Homes is known for quality construction, transparent dealings, and projects that deliver real value to homebuyers. Our RERA-approved projects and satisfied homeowners speak for themselves.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false" id="faq3">
+                            <span>Where's the best place to buy property in Bhubaneswar?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Popular spots include Patia, Nayapalli, Khandagiri, and areas near the Cuttack–Bhubaneswar NH — all with excellent connectivity and strong growth potential for long-term investment.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false" id="faq4">
+                            <span>Do you offer low-cost houses for sale in Bhubaneswar?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Yes! Our RERA-approved budget homes combine affordability with comfort, style, and modern amenities — giving you the best value without compromise.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false" id="faq5">
+                            <span>What are some of the best real estate projects in Bhubaneswar?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Our projects in Nayapalli, Patia, and near NH-16 feature 2BHK and 3BHK flats with excellent facilities and great resale value. Each project is designed with modern families in mind.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false" id="faq6">
+                            <span>Do you have apartments for sale near NH-16?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Yes, we have 2BHK and 3BHK apartments close to NH-16, offering unmatched connectivity to Cuttack and other major areas of Odisha.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false" id="faq7">
+                            <span>Are your housing projects RERA approved?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Absolutely. All Mahodadhi Homes projects are RERA approved, giving you complete transparency, security, and confidence in your investment.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false" id="faq8">
+                            <span>Do you have 2BHK and 3BHK flats at affordable prices?</span>
+                            <span class="faq-icon">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Yes! Whether you're starting out or upgrading, our 2BHK and 3BHK flats offer the perfect mix of space, style, and value for every stage of life.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ CONTACT SECTION ============ -->
+        <section id="contact" class="contact-section">
+            <div class="container">
+                <div class="section-header" data-animate="fade-up">
+                    <span class="section-subtitle">Get In Touch</span>
+                    <h2 class="section-title">Let's Build Your Dream Home</h2>
+                    <p class="section-description">Reach out to us for any inquiries about our projects or to schedule a site visit.</p>
+                </div>
+
+                <div class="contact-grid">
+                    <div class="contact-info" data-animate="slide-right">
+                        <div class="contact-info-item">
+                            <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <div>
+                                <h4 class="contact-item-title">Our Office</h4>
+                                <p class="contact-item-text">N3/457, IRC Village, Nayapalli,<br>Bhubaneswar, Pin- 751015, Odisha</p>
+                            </div>
+                        </div>
+                        <div class="contact-info-item">
+                            <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
+                            <div>
+                                <h4 class="contact-item-title">Call Us</h4>
+                                <p class="contact-item-text"><a href="tel:+919237388271">+91 92373 88271</a></p>
+                            </div>
+                        </div>
+                        <div class="contact-info-item">
+                            <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                            <div>
+                                <h4 class="contact-item-title">Email Us</h4>
+                                <p class="contact-item-text"><a href="mailto:info@mahodadhihomes.com">info@mahodadhihomes.com</a></p>
+                            </div>
+                        </div>
+                        <div class="contact-info-item">
+                            <div class="contact-icon"><i class="fas fa-clock"></i></div>
+                            <div>
+                                <h4 class="contact-item-title">Working Hours</h4>
+                                <p class="contact-item-text">Mon – Sat: 9:00 AM – 6:00 PM</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-social">
+                            <h4 class="contact-item-title">Follow Us</h4>
+                            <div class="social-links">
+                                <a href="https://www.facebook.com/profile.php?id=100078180126343" target="_blank" aria-label="Facebook" id="socialFacebook"><i class="fab fa-facebook-f"></i></a>
+                                <a href="https://x.com/Mahodadhihomes" target="_blank" aria-label="Twitter" id="socialTwitter"><i class="fab fa-x-twitter"></i></a>
+                                <a href="https://www.linkedin.com/in/mahodadhi-homes-a6a507306/" target="_blank" aria-label="LinkedIn" id="socialLinkedin"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="https://studio.youtube.com/channel/UCWmkwaECv78zt6QXhLIXnYg/videos/short?" target="_blank" aria-label="YouTube" id="socialYoutube"><i class="fab fa-youtube"></i></a>
+                                <a href="https://wa.me/+919237388271" target="_blank" aria-label="WhatsApp" id="socialWhatsapp"><i class="fab fa-whatsapp"></i></a>
+                                <a href="https://www.instagram.com/mahodadhi_homes_official/" target="_blank" aria-label="Instagram" id="socialInstagram"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-form-wrapper" data-animate="slide-left">
+                        <h3 class="form-title">Send Us a Message</h3>
+                        <form id="contactForm" novalidate>
+                            <div class="form-group">
+                                <input type="text" id="contactName" name="name" required autocomplete="name" placeholder=" ">
+                                <label for="contactName">Full Name</label>
+                                <span class="form-error" id="nameError"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" id="contactEmail" name="email" required autocomplete="email" placeholder=" ">
+                                <label for="contactEmail">Email Address</label>
+                                <span class="form-error" id="emailError"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="tel" id="contactPhone" name="phone" required autocomplete="tel" placeholder=" ">
+                                <label for="contactPhone">Phone Number</label>
+                                <span class="form-error" id="phoneError"></span>
+                            </div>
+                            <div class="form-group">
+                                <textarea id="contactMessage" name="message" rows="4" required placeholder=" "></textarea>
+                                <label for="contactMessage">Your Message</label>
+                                <span class="form-error" id="messageError"></span>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-submit" id="submitBtn">
+                                <span class="btn-text">Send Message</span>
+                                <span class="btn-loader"><i class="fas fa-spinner fa-spin"></i></span>
+                            </button>
+                            <div class="form-status" id="formStatus"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ============ FOOTER ============ -->
+    <footer id="footer" class="footer-section">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Brand -->
+                <div class="footer-brand">
+                    <a href="#hero" class="footer-logo">
+                        <img src="https://mahodadhihomes.com/front-assets/images/logo.png" alt="Mahodadhi Homes">
+                    </a>
+                    <p class="footer-tagline">Making dreams reality! Your trusted partner for quality homes in Bhubaneswar, Odisha.</p>
+                    <div class="footer-address">
+                        <p><i class="fas fa-map-marker-alt"></i> N3/457, IRC Village, Nayapalli, Bhubaneswar, Pin- 751015, Odisha</p>
+                        <p><i class="fas fa-phone-alt"></i> <a href="tel:+919237388271">+91 9237388271</a></p>
+                        <p><i class="fas fa-envelope"></i> <a href="mailto:info@mahodadhihomes.com">info@mahodadhihomes.com</a></p>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/profile.php?id=100078180126343" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://x.com/Mahodadhihomes" target="_blank" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+                        <a href="https://www.linkedin.com/in/mahodadhi-homes-a6a507306/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://studio.youtube.com/channel/UCWmkwaECv78zt6QXhLIXnYg/videos/short?" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="https://wa.me/+919237388271" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/mahodadhi_homes_official/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#projects">Our Projects</a></li>
+                        <li><a href="#amenities">Amenities</a></li>
+                        <li><a href="#testimonials">Testimonials</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Map -->
+                <div class="footer-map">
+                    <h4>Our Location</h4>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3742.1168627954294!2d85.80854737492062!3d20.29542941256213!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a1909ffd805bad3%3A0xa4e1125c0f40bee3!2sMahodadhi%20Homes%20Private%20Limited!5e0!3m2!1sen!2sin!4v1738063103285!5m2!1sen!2sin" width="100%" height="200" style="border:0; border-radius: 12px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mahodadhi Homes Office Location"></iframe>
+                </div>
+
+                <!-- Newsletter -->
+                <div class="footer-newsletter">
+                    <h4>Stay Updated</h4>
+                    <p>Subscribe to receive updates about our latest projects and exclusive offers.</p>
+                    <form id="newsletterForm">
+                        <input type="email" id="newsletterEmail" placeholder="Enter your email" required autocomplete="email">
+                        <button type="submit" id="newsletterSubmitBtn">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2025 All Rights Reserved. <span class="footer-highlight">Mahodadhi Homes Pvt. Ltd.</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============ SCRIPTS ============ -->
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- GSAP & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="js/three-scene.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/form.js"></script>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S36LGKKDHY"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-S36LGKKDHY');
+    </script>
+
+    <!-- Tawk.to Live Chat -->
+    <script type="text/javascript">
+        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+        (function(){
+            var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/67bec1ef5bb657190b4e6f4f/1il0ib57m';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+        })();
+    </script>
+</body>
+</html>
