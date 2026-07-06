@@ -30,7 +30,7 @@
     alpha: true
   });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(canvas.clientWidth || window.innerWidth, canvas.clientHeight || window.innerHeight, false);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -386,9 +386,11 @@
   /* ───────────────────────── resize handler ──────────────────────── */
   var baseBuildingY = 0;
   function onResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
+    var width = canvas.clientWidth || window.innerWidth;
+    var height = canvas.clientHeight || window.innerHeight;
+    camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(width, height, false);
 
     // Responsive 3D building layout, scaling, and camera angles
     if (window.innerWidth < 480) {
