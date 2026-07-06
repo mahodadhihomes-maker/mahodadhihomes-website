@@ -140,197 +140,300 @@
     envMapIntensity: 1.0
   });
 
-  /* ───────────────────────── building group ──────────────────────── */
-  var building = new THREE.Group();
+  /* ───────────────────────── custom materials ───────────────────── */
+  var slateBlueMat = new THREE.MeshStandardMaterial({
+    color: 0x3e5366,
+    roughness: 0.5,
+    metalness: 0.1
+  });
 
-  // ---- Main body ----
-  var bodyW = 4, bodyD = 3.2, bodyH = 14;
-  var bodyGeo = new THREE.BoxGeometry(bodyW, bodyH, bodyD);
-  var bodyMesh = new THREE.Mesh(bodyGeo, buildingMat);
-  bodyMesh.position.y = bodyH / 2;
-  bodyMesh.castShadow = true;
-  bodyMesh.receiveShadow = true;
-  building.add(bodyMesh);
+  var whiteBlockMat = new THREE.MeshStandardMaterial({
+    color: 0xf5f5f7,
+    roughness: 0.55,
+    metalness: 0.05
+  });
 
-  // ---- Base platform ----
-  var baseGeo = new THREE.BoxGeometry(bodyW + 1.2, 0.6, bodyD + 1.2);
-  var baseMesh = new THREE.Mesh(baseGeo, baseMat);
-  baseMesh.position.y = 0.3;
-  baseMesh.castShadow = true;
-  baseMesh.receiveShadow = true;
-  building.add(baseMesh);
+  var yellowAccentMat = new THREE.MeshStandardMaterial({
+    color: 0xffb300, // Golden yellow trim from the image
+    roughness: 0.45,
+    metalness: 0.15
+  });
 
-  // Second tier base
-  var base2Geo = new THREE.BoxGeometry(bodyW + 0.6, 0.4, bodyD + 0.6);
-  var base2Mesh = new THREE.Mesh(base2Geo, baseMat);
-  base2Mesh.position.y = 0.8;
-  base2Mesh.receiveShadow = true;
-  building.add(base2Mesh);
+  var marbleMat = new THREE.MeshStandardMaterial({
+    color: 0xcebda5, // Beige marble entrance arch
+    roughness: 0.35,
+    metalness: 0.05
+  });
 
-  // ---- Ground plane (subtle disk) ----
-  var groundGeo = new THREE.CylinderGeometry(7, 7, 0.08, 64);
-  var groundMat = new THREE.MeshStandardMaterial({
-    color: 0xe0e0e0,
+  var darkMetalMat = new THREE.MeshStandardMaterial({
+    color: 0x2a2a2a, // Fences, pergolas, and gates
+    roughness: 0.5,
+    metalness: 0.8
+  });
+
+  var foliageMat = new THREE.MeshStandardMaterial({
+    color: 0x2e7d32, // Palm leaves
+    roughness: 0.8,
+    metalness: 0.0
+  });
+
+  var trunkMat = new THREE.MeshStandardMaterial({
+    color: 0x5d4037, // Palm trunk
     roughness: 0.9,
     metalness: 0.0
   });
+
+  /* ───────────────────────── building group ──────────────────────── */
+  var building = new THREE.Group();
+
+  // 1. ---- Ground Disk ----
+  var groundGeo = new THREE.CylinderGeometry(11, 11, 0.08, 64);
+  var groundMat = new THREE.MeshStandardMaterial({
+    color: 0xe5e5e7,
+    roughness: 0.85,
+    metalness: 0.05
+  });
   var groundMesh = new THREE.Mesh(groundGeo, groundMat);
-  groundMesh.position.y = -0.04;
+  groundMesh.position.y = -0.6;
   groundMesh.receiveShadow = true;
   building.add(groundMesh);
 
-  // ---- Floor line indentations ----
-  var numFloors = 16;
-  var floorSpacing = (bodyH - 1) / numFloors;
-  for (var f = 0; f < numFloors; f++) {
-    var lineGeo = new THREE.BoxGeometry(bodyW + 0.02, 0.04, bodyD + 0.02);
-    var lineMesh = new THREE.Mesh(lineGeo, floorLineMat);
-    lineMesh.position.y = 1.2 + f * floorSpacing;
-    building.add(lineMesh);
-  }
+  // 2. ---- Stilt Ground Floor Slab ----
+  var stiltW = 12.8, stiltD = 3.6, stiltH = 0.15;
+  var stiltSlabGeo = new THREE.BoxGeometry(stiltW, stiltH, stiltD);
+  var stiltSlab = new THREE.Mesh(stiltSlabGeo, baseMat);
+  stiltSlab.position.y = -0.5 + stiltH / 2;
+  stiltSlab.receiveShadow = true;
+  stiltSlab.castShadow = true;
+  building.add(stiltSlab);
 
-  // ---- Glass windows ----
-  var winW = 0.7, winH = 0.55, winD = 0.06;
-  var windowsPerFloorFront = 4;
-  var windowsPerFloorSide = 3;
+  // 3. ---- Stilt Columns (Ground floor pillars supporting the building) ----
+  var columnHeight = 0.9;
+  var columnGeo = new THREE.BoxGeometry(0.16, columnHeight, 0.16);
+  var xPositions = [-6.0, -4.8, -3.6, -2.4, -1.2, 0.0, 1.2, 2.4, 3.6, 4.8, 6.0];
+  var zPositions = [-1.5, 0.0, 1.5];
 
-  // ---- Corner Vertical Neon Lighting Columns ----
-  var neonColumnGeo = new THREE.BoxGeometry(0.06, bodyH, 0.06);
-  var corners = [
-    { x: -bodyW / 2 - 0.01, z: bodyD / 2 + 0.01 },
-    { x: bodyW / 2 + 0.01, z: bodyD / 2 + 0.01 },
-    { x: -bodyW / 2 - 0.01, z: -bodyD / 2 - 0.01 },
-    { x: bodyW / 2 + 0.01, z: -bodyD / 2 - 0.01 }
-  ];
-  corners.forEach(function (c) {
-    var neonMesh = new THREE.Mesh(neonColumnGeo, neonMat);
-    neonMesh.position.set(c.x, bodyH / 2, c.z);
-    building.add(neonMesh);
+  xPositions.forEach(function (x) {
+    zPositions.forEach(function (z) {
+      // Don't place columns where the entrance gate is located
+      if (x > 3.0 && z > 1.0) return;
+
+      var colMesh = new THREE.Mesh(columnGeo, baseMat);
+      colMesh.position.set(x, -0.5 - columnHeight / 2, z);
+      colMesh.castShadow = true;
+      colMesh.receiveShadow = true;
+      building.add(colMesh);
+    });
   });
 
-  for (var fl = 0; fl < numFloors; fl++) {
-    var floorY = 1.2 + fl * floorSpacing + floorSpacing * 0.5;
+  // 4. ---- Horizontal Building Blocks (5 distinct connected structures) ----
+  var blockW = 2.4, blockH = 5.2, blockD = 3.2;
+  var blockConfigs = [
+    { x: -4.8, mat: whiteBlockMat,  type: 'balcony-yellow' }, // Block 1 (Leftmost, White, Yellow frames)
+    { x: -2.4, mat: slateBlueMat,   type: 'standard-dark' },  // Block 2 (Left-Center, Slate blue)
+    { x: 0.0,  mat: whiteBlockMat,  type: 'central-slit' },   // Block 3 (Center, White, vertical glass slit)
+    { x: 2.4,  mat: slateBlueMat,   type: 'standard-yellow' },// Block 4 (Right-Center, Slate blue, Yellow trims)
+    { x: 4.8,  mat: whiteBlockMat,  type: 'balcony-yellow' }  // Block 5 (Rightmost, White, Yellow frames)
+  ];
 
-    // Front face windows (z+)
-    for (var wi = 0; wi < windowsPerFloorFront; wi++) {
-      var winGeo = new THREE.BoxGeometry(winW, winH, winD);
-      // 25% chance of warm glowing window, otherwise blue physical glass
-      var winMatToUse = Math.random() < 0.28 ? litGlassMat : glassMat;
-      var winMesh = new THREE.Mesh(winGeo, winMatToUse);
-      var xOff = (wi - (windowsPerFloorFront - 1) / 2) * (bodyW / (windowsPerFloorFront + 0.5));
-      winMesh.position.set(xOff, floorY, bodyD / 2 + 0.02);
-      building.add(winMesh);
+  var numFloors = 5;
+  var floorHeight = (blockH - 0.2) / numFloors;
 
-      // Add architectural balconies below some front windows
-      if (fl > 1 && fl < numFloors - 2 && fl % 3 === 0 && wi % 2 === 0) {
-        // Balcony slab
-        var balconyGeo = new THREE.BoxGeometry(winW + 0.15, 0.04, 0.45);
-        var balconyMesh = new THREE.Mesh(balconyGeo, buildingMat);
-        balconyMesh.position.set(xOff, floorY - winH / 2 - 0.04, bodyD / 2 + 0.22);
-        balconyMesh.castShadow = true;
-        balconyMesh.receiveShadow = true;
-        building.add(balconyMesh);
+  blockConfigs.forEach(function (cfg) {
+    // Main block mesh
+    var bGeo = new THREE.BoxGeometry(blockW, blockH, blockD);
+    var bMesh = new THREE.Mesh(bGeo, cfg.mat);
+    bMesh.position.set(cfg.x, -0.5 + blockH / 2, 0);
+    bMesh.castShadow = true;
+    bMesh.receiveShadow = true;
+    building.add(bMesh);
 
-        // Balcony gold railing
-        var railGeo = new THREE.BoxGeometry(winW + 0.15, 0.18, 0.02);
-        var railMesh = new THREE.Mesh(railGeo, goldMat);
-        railMesh.position.set(xOff, floorY - winH / 2 + 0.08, bodyD / 2 + 0.43);
-        building.add(railMesh);
+    // Floor lines (horizontal lines dividing floors)
+    for (var f = 1; f < numFloors; f++) {
+      var fLineGeo = new THREE.BoxGeometry(blockW + 0.02, 0.03, blockD + 0.02);
+      var fLineMesh = new THREE.Mesh(fLineGeo, floorLineMat);
+      fLineMesh.position.set(cfg.x, -0.5 + f * floorHeight, 0);
+      building.add(fLineMesh);
+    }
+
+    // Windows and Architectural Balconies (by block type)
+    for (var fl = 0; fl < numFloors; fl++) {
+      var winY = -0.5 + fl * floorHeight + floorHeight / 2;
+
+      // ---- Front face elements ----
+      if (cfg.type === 'balcony-yellow') {
+        // Two columns of windows per floor, with yellow frames and balconies
+        for (var c = -1; c <= 1; c += 2) {
+          var wX = cfg.x + c * 0.6;
+          // Glass window
+          var wGeo = new THREE.BoxGeometry(0.7, 0.55, 0.06);
+          var wMat = Math.random() < 0.3 ? litGlassMat : glassMat;
+          var wMesh = new THREE.Mesh(wGeo, wMat);
+          wMesh.position.set(wX, winY, blockD / 2 + 0.02);
+          building.add(wMesh);
+
+          // Yellow frame box surrounding the balcony/window
+          var frameGeo = new THREE.BoxGeometry(0.82, 0.67, 0.12);
+          var frameMesh = new THREE.Mesh(frameGeo, yellowAccentMat);
+          frameMesh.position.set(wX, winY, blockD / 2 + 0.05);
+          building.add(frameMesh);
+
+          // Balcony slab
+          var balSlabGeo = new THREE.BoxGeometry(0.76, 0.04, 0.4);
+          var balSlab = new THREE.Mesh(balSlabGeo, whiteBlockMat);
+          balSlab.position.set(wX, winY - 0.32, blockD / 2 + 0.22);
+          balSlab.castShadow = true;
+          building.add(balSlab);
+
+          // Balcony dark metallic railing
+          var balRailGeo = new THREE.BoxGeometry(0.76, 0.2, 0.02);
+          var balRail = new THREE.Mesh(balRailGeo, darkMetalMat);
+          balRail.position.set(wX, winY - 0.22, blockD / 2 + 0.41);
+          building.add(balRail);
+        }
+      } 
+      else if (cfg.type === 'standard-dark') {
+        // Dark slate-blue block with standard windows
+        for (var c2 = -1; c2 <= 1; c2 += 2) {
+          var wX2 = cfg.x + c2 * 0.6;
+          var wGeo2 = new THREE.BoxGeometry(0.55, 0.55, 0.05);
+          var wMat2 = Math.random() < 0.25 ? litGlassMat : glassMat;
+          var wMesh2 = new THREE.Mesh(wGeo2, wMat2);
+          wMesh2.position.set(wX2, winY, blockD / 2 + 0.02);
+          building.add(wMesh2);
+
+          // Dark concrete frames
+          var fGeo = new THREE.BoxGeometry(0.67, 0.67, 0.06);
+          var fMesh = new THREE.Mesh(fGeo, darkMetalMat);
+          fMesh.position.set(wX2, winY, blockD / 2 + 0.02);
+          building.add(fMesh);
+        }
+      } 
+      else if (cfg.type === 'central-slit') {
+        // White central block with vertical dark window slit in center, and regular windows on sides
+        if (fl === 0) {
+          // One tall vertical glass window running up the center of this block
+          var slitGeo = new THREE.BoxGeometry(0.4, blockH - 0.8, 0.08);
+          var slitMesh = new THREE.Mesh(slitGeo, glassMat);
+          slitMesh.position.set(cfg.x, -0.5 + blockH / 2, blockD / 2 + 0.03);
+          building.add(slitMesh);
+        }
+
+        // Side windows on Block 3
+        for (var c3 = -1; c3 <= 1; c3 += 2) {
+          var wX3 = cfg.x + c3 * 0.8;
+          var wGeo3 = new THREE.BoxGeometry(0.5, 0.55, 0.05);
+          var wMat3 = Math.random() < 0.35 ? litGlassMat : glassMat;
+          var wMesh3 = new THREE.Mesh(wGeo3, wMat3);
+          wMesh3.position.set(wX3, winY, blockD / 2 + 0.02);
+          building.add(wMesh3);
+        }
+      } 
+      else if (cfg.type === 'standard-yellow') {
+        // Slate-blue block with yellow vertical trim accents and balconies
+        for (var c4 = -1; c4 <= 1; c4 += 2) {
+          var wX4 = cfg.x + c4 * 0.6;
+          var wGeo4 = new THREE.BoxGeometry(0.65, 0.55, 0.05);
+          var wMat4 = Math.random() < 0.2 ? litGlassMat : glassMat;
+          var wMesh4 = new THREE.Mesh(wGeo4, wMat4);
+          wMesh4.position.set(wX4, winY, blockD / 2 + 0.02);
+          building.add(wMesh4);
+
+          // Yellow panel side vertical columns
+          var panelGeo = new THREE.BoxGeometry(0.12, 0.67, 0.08);
+          var panelMesh = new THREE.Mesh(panelGeo, yellowAccentMat);
+          panelMesh.position.set(wX4 - 0.38, winY, blockD / 2 + 0.03);
+          building.add(panelMesh);
+        }
       }
     }
 
-    // Back face windows (z-)
-    for (var wi2 = 0; wi2 < windowsPerFloorFront; wi2++) {
-      var winGeo2 = new THREE.BoxGeometry(winW, winH, winD);
-      var winMatToUse2 = Math.random() < 0.28 ? litGlassMat : glassMat;
-      var winMesh2 = new THREE.Mesh(winGeo2, winMatToUse2);
-      var xOff2 = (wi2 - (windowsPerFloorFront - 1) / 2) * (bodyW / (windowsPerFloorFront + 0.5));
-      winMesh2.position.set(xOff2, floorY, -(bodyD / 2 + 0.02));
-      building.add(winMesh2);
-    }
+    // 5. ---- Roof Terraces & Pergolas ----
+    // Glass safety railing along front of each block roof
+    var railFrontGeo = new THREE.BoxGeometry(blockW - 0.1, 0.35, 0.02);
+    var railFront = new THREE.Mesh(railFrontGeo, glassMat);
+    railFront.position.set(cfg.x, -0.5 + blockH + 0.18, blockD / 2 - 0.02);
+    building.add(railFront);
 
-    // Left face windows (x-)
-    for (var wi3 = 0; wi3 < windowsPerFloorSide; wi3++) {
-      var winGeo3 = new THREE.BoxGeometry(winD, winH, winW);
-      var winMatToUse3 = Math.random() < 0.25 ? litGlassMat : glassMat;
-      var winMesh3 = new THREE.Mesh(winGeo3, winMatToUse3);
-      var zOff = (wi3 - (windowsPerFloorSide - 1) / 2) * (bodyD / (windowsPerFloorSide + 0.5));
-      winMesh3.position.set(-(bodyW / 2 + 0.02), floorY, zOff);
-      building.add(winMesh3);
+    // Decorative pergolas on some roofs (blocks 1 and 3)
+    if (cfg.type === 'balcony-yellow' || cfg.type === 'central-slit') {
+      var pBarGeo = new THREE.BoxGeometry(blockW - 0.4, 0.06, 0.06);
+      for (var pZ = -1.0; pZ <= 1.0; pZ += 0.5) {
+        var pBar = new THREE.Mesh(pBarGeo, darkMetalMat);
+        pBar.position.set(cfg.x, -0.5 + blockH + 0.3, pZ);
+        building.add(pBar);
+      }
     }
+  });
 
-    // Right face windows (x+)
-    for (var wi4 = 0; wi4 < windowsPerFloorSide; wi4++) {
-      var winGeo4 = new THREE.BoxGeometry(winD, winH, winW);
-      var winMatToUse4 = Math.random() < 0.25 ? litGlassMat : glassMat;
-      var winMesh4 = new THREE.Mesh(winGeo4, winMatToUse4);
-      var zOff2 = (wi4 - (windowsPerFloorSide - 1) / 2) * (bodyD / (windowsPerFloorSide + 0.5));
-      winMesh4.position.set(bodyW / 2 + 0.02, floorY, zOff2);
-      building.add(winMesh4);
-    }
+  // 6. ---- Grand Entrance Archway & Gate (Front-Right, X = 3.5, Z = 2.4) ----
+  var archX = 3.4, archZ = 2.0;
+
+  // Beige marble arch pillars
+  var pillarLGeo = new THREE.BoxGeometry(0.4, 1.8, 0.4);
+  var pillarL = new THREE.Mesh(pillarLGeo, marbleMat);
+  pillarL.position.set(archX - 1.2, -0.5 + 0.9, archZ);
+  pillarL.castShadow = true;
+  building.add(pillarL);
+
+  var pillarRGeo = new THREE.BoxGeometry(0.4, 1.8, 0.4);
+  var pillarR = new THREE.Mesh(pillarRGeo, marbleMat);
+  pillarR.position.set(archX + 1.2, -0.5 + 0.9, archZ);
+  pillarR.castShadow = true;
+  building.add(pillarR);
+
+  // Top header crossbeam
+  var beamGeo = new THREE.BoxGeometry(2.8, 0.35, 0.48);
+  var beam = new THREE.Mesh(beamGeo, marbleMat);
+  beam.position.set(archX, -0.5 + 1.8 + 0.17, archZ);
+  beam.castShadow = true;
+  building.add(beam);
+
+  // Gold logo plaque on top of arch beam
+  var plaqueGeo = new THREE.BoxGeometry(0.5, 0.25, 0.04);
+  var plaque = new THREE.Mesh(plaqueGeo, goldMat);
+  plaque.position.set(archX, -0.5 + 1.8 + 0.17, archZ + 0.25);
+  building.add(plaque);
+
+  // Arch gate doors (lower dark metallic frames)
+  var gateGeo = new THREE.BoxGeometry(1.0, 0.8, 0.04);
+  for (var side = -1; side <= 1; side += 2) {
+    var gateDoor = new THREE.Mesh(gateGeo, darkMetalMat);
+    gateDoor.position.set(archX + side * 0.55, -0.5 + 0.4, archZ);
+    building.add(gateDoor);
   }
 
-  // ---- Gold accent strip near the top ----
-  var accentGeo = new THREE.BoxGeometry(bodyW + 0.08, 0.15, bodyD + 0.08);
-  var accentMesh = new THREE.Mesh(accentGeo, goldMat);
-  accentMesh.position.y = bodyH - 0.5;
-  building.add(accentMesh);
+  // 7. ---- Landscaping Front Palm Trees ----
+  var palmConfigs = [
+    { x: -5.4, z: 2.1 },
+    { x: -3.8, z: 2.1 },
+    { x: -1.0, z: 2.1 },
+    { x: 1.0, z: 2.1 }
+  ];
 
-  // Second gold accent (thinner, higher)
-  var accent2Geo = new THREE.BoxGeometry(bodyW + 0.04, 0.06, bodyD + 0.04);
-  var accent2Mesh = new THREE.Mesh(accent2Geo, goldMat);
-  accent2Mesh.position.y = bodyH + 0.1;
-  building.add(accent2Mesh);
+  palmConfigs.forEach(function (palm) {
+    // Tree trunk (thin cylinders slightly bent/stacked)
+    var trunkH = 0.95;
+    var tGeo = new THREE.CylinderGeometry(0.04, 0.06, trunkH, 8);
+    var tMesh = new THREE.Mesh(tGeo, trunkMat);
+    tMesh.position.set(palm.x, -0.5 + trunkH / 2, palm.z);
+    tMesh.castShadow = true;
+    building.add(tMesh);
 
-  // ---- Sky Lounge Penthouse Glass Core & Walls ----
-  var coreGeo = new THREE.BoxGeometry(bodyW - 1.2, 0.9, bodyD - 1.2);
-  var coreMesh = new THREE.Mesh(coreGeo, litGlassMat);
-  coreMesh.position.y = bodyH + 0.45;
-  building.add(coreMesh);
+    // Palm leaves (layers of flat green rings/boxes)
+    var leafGroup = new THREE.Group();
+    leafGroup.position.set(palm.x, -0.5 + trunkH, palm.z);
 
-  var loungeGeo = new THREE.BoxGeometry(bodyW - 0.6, 1.0, bodyD - 0.6);
-  var loungeMesh = new THREE.Mesh(loungeGeo, glassMat);
-  loungeMesh.position.y = bodyH + 0.5;
-  building.add(loungeMesh);
+    for (var l = 0; l < 5; l++) {
+      var leafGeo = new THREE.BoxGeometry(0.55, 0.02, 0.12);
+      var leaf = new THREE.Mesh(leafGeo, foliageMat);
+      leaf.rotation.y = (l * Math.PI) / 2.5;
+      leaf.rotation.z = 0.18; // Slightly droop
+      leafGroup.add(leaf);
+    }
+    building.add(leafGroup);
+  });
 
-  // Luxury gold crown cap
-  var crownGeo = new THREE.BoxGeometry(bodyW - 0.4, 0.15, bodyD - 0.4);
-  var crownMesh = new THREE.Mesh(crownGeo, goldMat);
-  crownMesh.position.y = bodyH + 1.05;
-  crownMesh.castShadow = true;
-  building.add(crownMesh);
-
-  // Spire & glowing beacon
-  var spireGeo = new THREE.CylinderGeometry(0.03, 0.03, 2.0, 8);
-  var spireMesh = new THREE.Mesh(spireGeo, goldMat);
-  spireMesh.position.y = bodyH + 2.05;
-  building.add(spireMesh);
-
-  var spireTopGeo = new THREE.SphereGeometry(0.08, 16, 16);
-  var spireTopMesh = new THREE.Mesh(spireTopGeo, litGlassMat);
-  spireTopMesh.position.y = bodyH + 3.05;
-  building.add(spireTopMesh);
-
-  // ---- Entrance canopy ----
-  var canopyGeo = new THREE.BoxGeometry(1.8, 0.08, 1.2);
-  var canopyMesh = new THREE.Mesh(canopyGeo, goldMat);
-  canopyMesh.position.set(0, 1.6, bodyD / 2 + 0.6);
-  canopyMesh.castShadow = true;
-  building.add(canopyMesh);
-
-  // Entrance glass door
-  var doorGeo = new THREE.BoxGeometry(1.2, 1.4, 0.05);
-  var doorMesh = new THREE.Mesh(doorGeo, glassMat);
-  doorMesh.position.set(0, 1.3, bodyD / 2 + 0.02);
-  building.add(doorMesh);
-
-  // Canopy support pillars
-  for (var p = -1; p <= 1; p += 2) {
-    var pillarGeo = new THREE.CylinderGeometry(0.05, 0.05, 0.6, 8);
-    var pillarMesh = new THREE.Mesh(pillarGeo, goldMat);
-    pillarMesh.position.set(p * 0.8, 1.3, bodyD / 2 + 1.15);
-    building.add(pillarMesh);
-  }
   scene.add(building);
 
   /* ───────────────────────── floating elements ──────────────────── */
@@ -346,13 +449,13 @@
   }
 
   var tk1 = createTorusKnot(0.4, 0.12, 2, 3, 0.8);
-  tk1.userData = { angle: 0, radius: 6, speed: 0.003, bobSpeed: 1.2, bobAmp: 0.6, baseY: 10 };
-  building.add(tk1); // Add to building instead of scene
+  tk1.userData = { angle: 0, radius: 8.0, speed: 0.003, bobSpeed: 1.2, bobAmp: 0.4, baseY: 3.5 };
+  building.add(tk1);
   floaters.push(tk1);
 
   var tk2 = createTorusKnot(0.35, 0.1, 3, 2, 0.6);
-  tk2.userData = { angle: Math.PI * 0.6, radius: 7, speed: 0.0025, bobSpeed: 0.9, bobAmp: 0.8, baseY: 5 };
-  building.add(tk2); // Add to building instead of scene
+  tk2.userData = { angle: Math.PI * 0.6, radius: 9.0, speed: 0.0025, bobSpeed: 0.9, bobAmp: 0.5, baseY: 1.5 };
+  building.add(tk2);
   floaters.push(tk2);
 
   // --- Glass Spheres ---
@@ -363,13 +466,13 @@
   }
 
   var gs1 = createGlassSphere(0.5);
-  gs1.userData = { angle: Math.PI * 1.2, radius: 5.5, speed: 0.004, bobSpeed: 1.5, bobAmp: 0.5, baseY: 12 };
-  building.add(gs1); // Add to building instead of scene
+  gs1.userData = { angle: Math.PI * 1.2, radius: 7.5, speed: 0.004, bobSpeed: 1.5, bobAmp: 0.35, baseY: 4.5 };
+  building.add(gs1);
   floaters.push(gs1);
 
   var gs2 = createGlassSphere(0.35);
-  gs2.userData = { angle: Math.PI * 1.8, radius: 8, speed: 0.002, bobSpeed: 1.0, bobAmp: 0.7, baseY: 3 };
-  building.add(gs2); // Add to building instead of scene
+  gs2.userData = { angle: Math.PI * 1.8, radius: 9.5, speed: 0.002, bobSpeed: 1.0, bobAmp: 0.45, baseY: 1.0 };
+  building.add(gs2);
   floaters.push(gs2);
 
   /* ───────────────────────── mouse parallax ──────────────────────── */
