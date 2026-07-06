@@ -23,6 +23,41 @@
     initFAQAccordion();
     initParallax();
 
+    // Handle Preloader Fade-out (Premium Slide-up Transition)
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+      // 1. Zoom out and fade out the preloader logo & progress line
+      gsap.to('.preloader-logo, .preloader-line', {
+        opacity: 0,
+        scale: 0.9,
+        y: -20,
+        duration: 0.5,
+        ease: 'power2.inOut',
+        delay: 0.3
+      });
+
+      // 2. Slide the preloader screen completely up out of the viewport
+      gsap.to(preloader, {
+        yPercent: -100,
+        duration: 0.9,
+        ease: 'power3.inOut',
+        delay: 0.6, // Starts as the logo finishes fading
+        onComplete: function() {
+          preloader.style.visibility = 'hidden';
+          preloader.style.display = 'none';
+        }
+      });
+
+      // 3. Smooth parallax reveal of the main website (slides up slightly into view)
+      gsap.from('#header, .hero-section', {
+        y: 60,
+        opacity: 0.9,
+        duration: 1.0,
+        ease: 'power3.out',
+        delay: 0.7
+      });
+    }
+
     // Force GSAP ScrollTrigger to recalculate exact scroll locations
     ScrollTrigger.refresh();
   });
@@ -145,7 +180,7 @@
       y: -20,
       scale: 0.8,
       duration: 0.7,
-      delay: 0.4
+      delay: 1.1
     })
     // Title lines stagger in one by one
     .from('.hero-title-line', {
