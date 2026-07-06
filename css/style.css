@@ -1129,18 +1129,23 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .project-card {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 28px; /* Curved Apple bento look */
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  transition: var(--transition-smooth);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease; /* No transform transition by default to prevent GSAP conflict */
+}
+
+.project-card.hover-active {
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .project-card:hover {
+  background: #ffffff;
   transform: translateY(-8px);
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  border-color: rgba(184, 144, 71, 0.4);
+  box-shadow: 0 20px 45px rgba(184, 144, 71, 0.12);
 }
 
 .project-image {
@@ -1291,14 +1296,18 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 28px;
   padding: 32px;
   text-align: center;
-  transition: var(--transition-smooth);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease; /* No transform transition by default to prevent GSAP conflict */
+}
+
+.amenity-card.hover-active {
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .amenity-card:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.05);
   transform: translateY(-6px);
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
 }
 
 .amenity-icon {
@@ -1350,18 +1359,22 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .service-card {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 28px;
   padding: 40px 30px;
   text-align: center;
-  transition: var(--transition-smooth);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease; /* No transform transition by default to prevent GSAP conflict */
+}
+
+.service-card.hover-active {
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .service-card:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  background: #ffffff;
+  border-color: rgba(184, 144, 71, 0.4);
+  box-shadow: 0 15px 35px rgba(184, 144, 71, 0.12);
   transform: translateY(-6px);
 }
 

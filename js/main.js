@@ -297,7 +297,13 @@
         y: 60,
         duration: 0.8,
         stagger: 0.15,
-        ease: 'power3.out'
+        ease: 'power3.out',
+        clearProps: 'opacity,transform',
+        onComplete: function () {
+          projectCards.forEach(function (card) {
+            card.classList.add('hover-active');
+          });
+        }
       });
     }
 
@@ -314,7 +320,13 @@
         y: 60,
         duration: 0.8,
         stagger: 0.15,
-        ease: 'power3.out'
+        ease: 'power3.out',
+        clearProps: 'opacity,transform',
+        onComplete: function () {
+          amenityCards.forEach(function (card) {
+            card.classList.add('hover-active');
+          });
+        }
       });
     }
 
@@ -331,7 +343,13 @@
         y: 60,
         duration: 0.8,
         stagger: 0.15,
-        ease: 'power3.out'
+        ease: 'power3.out',
+        clearProps: 'opacity,transform',
+        onComplete: function () {
+          serviceCards.forEach(function (card) {
+            card.classList.add('hover-active');
+          });
+        }
       });
     }
   }
