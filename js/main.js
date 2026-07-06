@@ -49,7 +49,16 @@
       });
 
       // 3. Smooth parallax reveal of the main website (slides up slightly into view)
-      gsap.from('#header, .hero-section', {
+      gsap.from('.navbar', {
+        y: -60,
+        opacity: 0,
+        duration: 1.0,
+        ease: 'power3.out',
+        delay: 0.7,
+        clearProps: 'all' // Ensures no inline styles interfere with scroll styles later
+      });
+
+      gsap.from('.hero-section', {
         y: 60,
         opacity: 0.9,
         duration: 1.0,
