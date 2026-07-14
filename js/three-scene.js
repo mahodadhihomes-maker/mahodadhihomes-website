@@ -124,7 +124,7 @@
   // A visible local preview prevents the hero from looking empty during the GLB download.
   showImageFallback();
   // building.glb in the source archive is an empty placeholder. Load the real local model.
-  new THREE.GLTFLoader().load('models/11_Front-removebg-preview.glb', function (gltf) {
+  new THREE.GLTFLoader().load('models/a7809272-ff56-4fc5-8afb-962eb625d9dc.glb', function (gltf) {
     setMaterials(gltf.scene);
     frameModel(gltf.scene);
     if (fallback) {
