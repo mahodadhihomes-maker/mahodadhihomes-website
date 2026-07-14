@@ -6,7 +6,11 @@
   'use strict';
 
   // ── GSAP Registration ──
-  gsap.registerPlugin(ScrollTrigger);
+  // Guarded: if the GSAP/ScrollTrigger CDN is blocked or slow, don't let it
+  // take down the rest of the page's interactivity.
+  if (window.gsap && window.ScrollTrigger) {
+    gsap.registerPlugin(ScrollTrigger);
+  }
 
   // ── Window Load (Ensures all images/layouts are complete before ScrollTrigger checks positions) ──
   window.addEventListener('load', function () {
@@ -181,81 +185,109 @@
     const heroContent = document.querySelector('.hero-content');
     if (!heroContent) return;
 
-    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    // Hard failsafe: no matter what happens with GSAP (blocked CDN, slow
+    // network, an unrelated script error interrupting the timeline), make
+    // sure every hero element is fully visible after a short delay.
+    var heroFailsafeTargets =
+      '.hero-badge, .hero-title-line, .hero-subtitle, .hero-cta .btn, ' +
+      '.hero-trust-badges, .hero-stats .stat-item, .hero-scroll-indicator, ' +
+      '.hero-shapes .shape, .hero-glow';
 
-    // Badge drops in
-    tl.from('.hero-badge', {
-      opacity: 0,
-      y: -20,
-      scale: 0.8,
-      duration: 0.7,
-      delay: 1.1
-    })
-    // Title lines stagger in one by one
-    .from('.hero-title-line', {
-      opacity: 0,
-      y: 60,
-      rotationX: -15,
-      duration: 0.9,
-      stagger: 0.2
-    }, '-=0.3')
-    // Subtitle fades up
-    .from('.hero-subtitle', {
-      opacity: 0,
-      y: 40,
-      duration: 0.7
-    }, '-=0.4')
-    // CTA buttons scale in
-    .from('.hero-cta .btn', {
-      opacity: 0,
-      y: 30,
-      scale: 0.9,
-      duration: 0.6,
-      stagger: 0.12
-    }, '-=0.3')
-    // Trust badges slide in
-    .from('.hero-trust-badges', {
-      opacity: 0,
-      x: -30,
-      duration: 0.6
-    }, '-=0.2')
-    // Stat cards pop in with scale
-    .from('.hero-stats .stat-item', {
-      opacity: 0,
-      y: 40,
-      scale: 0.85,
-      duration: 0.6,
-      stagger: 0.12,
-      ease: 'back.out(1.5)'
-    }, '-=0.3')
-    // Scroll indicator fades in last
-    .from('.hero-scroll-indicator', {
-      opacity: 0,
-      y: 20,
-      duration: 0.5
-    }, '-=0.1')
-    // Floating shapes and particles
-    .from('.hero-shapes .shape', {
-      opacity: 0,
-      scale: 0,
-      duration: 0.8,
-      stagger: 0.1,
-      ease: 'elastic.out(1, 0.5)'
-    }, '-=0.8')
-    .from('.hero-glow', {
-      opacity: 0,
-      scale: 0.5,
-      duration: 1.2,
-      stagger: 0.15
-    }, '-=1')
-    .from('.hero-glass-cards .glass-card', {
-      opacity: 0,
-      x: 50,
-      scale: 0.9,
-      duration: 1.0,
-      stagger: 0.18,
-      ease: 'back.out(1.4)'
-    }, '-=0.8');
+    function revealHeroContent() {
+      document.querySelectorAll(heroFailsafeTargets).forEach(function (el) {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      });
+    }
+
+    setTimeout(revealHeroContent, 3500);
+
+    if (!window.gsap) {
+      revealHeroContent();
+      return;
+    }
+
+    try {
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+      // Badge drops in
+      tl.from('.hero-badge', {
+        opacity: 0,
+        y: -20,
+        scale: 0.8,
+        duration: 0.7,
+        delay: 1.1
+      })
+      // Title lines stagger in one by one
+      .from('.hero-title-line', {
+        opacity: 0,
+        y: 60,
+        rotationX: -15,
+        duration: 0.9,
+        stagger: 0.2
+      }, '-=0.3')
+      // Subtitle fades up
+      .from('.hero-subtitle', {
+        opacity: 0,
+        y: 40,
+        duration: 0.7
+      }, '-=0.4')
+      // CTA buttons scale in
+      .from('.hero-cta .btn', {
+        opacity: 0,
+        y: 30,
+        scale: 0.9,
+        duration: 0.6,
+        stagger: 0.12
+      }, '-=0.3')
+      // Trust badges slide in
+      .from('.hero-trust-badges', {
+        opacity: 0,
+        x: -30,
+        duration: 0.6
+      }, '-=0.2')
+      // Stat cards pop in with scale
+      .from('.hero-stats .stat-item', {
+        opacity: 0,
+        y: 40,
+        scale: 0.85,
+        duration: 0.6,
+        stagger: 0.12,
+        ease: 'back.out(1.5)'
+      }, '-=0.3')
+      // Scroll indicator fades in last
+      .from('.hero-scroll-indicator', {
+        opacity: 0,
+        y: 20,
+        duration: 0.5
+      }, '-=0.1')
+      // Floating shapes and particles
+      .from('.hero-shapes .shape', {
+        opacity: 0,
+        scale: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: 'elastic.out(1, 0.5)'
+      }, '-=0.8')
+      .from('.hero-glow', {
+        opacity: 0,
+        scale: 0.5,
+        duration: 1.2,
+        stagger: 0.15
+      }, '-=1')
+      .from('.hero-glass-cards .glass-card', {
+        opacity: 0,
+        x: 50,
+        scale: 0.9,
+        duration: 1.0,
+        stagger: 0.18,
+        ease: 'back.out(1.4)'
+      }, '-=0.8');
+    } catch (err) {
+      /* If the GSAP timeline errors out mid-build, don't leave elements
+         permanently hidden — reveal everything immediately. */
+      revealHeroContent();
+    }
   }
 
 

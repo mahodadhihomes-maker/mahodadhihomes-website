@@ -3,52 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Global Error Catcher for Debugging -->
-    <script>
-        document.documentElement.classList.add('js-enabled');
-        window.onerror = function(message, source, lineno, colno, error) {
-            var div = document.getElementById('debug-error-banner') || document.createElement('div');
-            div.id = 'debug-error-banner';
-            div.style.position = 'fixed';
-            div.style.top = '0';
-            div.style.left = '0';
-            div.style.width = '100%';
-            div.style.background = '#dc3545';
-            div.style.color = '#fff';
-            div.style.padding = '15px';
-            div.style.zIndex = '99999';
-            div.style.fontSize = '14px';
-            div.style.fontFamily = 'monospace';
-            div.style.borderBottom = '3px solid #721c24';
-            div.style.maxHeight = '200px';
-            div.style.overflowY = 'auto';
-            div.style.boxShadow = '0 4px 10px rgba(0,0,0,0.3)';
-            div.innerHTML = '<strong>JS Error:</strong> ' + message + ' at ' + (source ? source.split("/").pop() : "unknown") + ':' + lineno + ':' + colno + 
-                            '<br><button onclick="this.parentNode.remove()" style="margin-top:5px;padding:3px 8px;background:#fff;color:#000;border:none;cursor:pointer;border-radius:3px;">Dismiss</button>';
-            document.body.appendChild(div);
-            return false;
-        };
-        window.addEventListener('error', function(e) {
-            if (e.target && (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK')) {
-                var div = document.getElementById('debug-resource-banner') || document.createElement('div');
-                div.id = 'debug-resource-banner';
-                div.style.position = 'fixed';
-                div.style.top = '50px';
-                div.style.left = '0';
-                div.style.width = '100%';
-                div.style.background = '#ffc107';
-                div.style.color = '#000';
-                div.style.padding = '15px';
-                div.style.zIndex = '99998';
-                div.style.fontSize = '14px';
-                div.style.fontFamily = 'sans-serif';
-                div.style.boxShadow = '0 4px 10px rgba(0,0,0,0.3)';
-                div.innerHTML = '<strong>Resource Load Failure:</strong> Failed to load ' + (e.target.src || e.target.href).split("/").pop() +
-                                '<br><button onclick="this.parentNode.remove()" style="margin-top:5px;padding:3px 8px;background:#000;color:#fff;border:none;cursor:pointer;border-radius:3px;">Dismiss</button>';
-                document.body.appendChild(div);
-            }
-        }, true);
-    </script>
+    <script>document.documentElement.classList.add('js-enabled');</script>
     <meta name="keywords" content="low cost houses for sale in Bhubaneswar, 2BHK flats in affordable price, 3BHK apartments, RERA approved residential projects, apartments for sale near NH-16, apartments near Cuttack–Bhubaneswar NH, Mahodadhi Homes, real estate Bhubaneswar">
     <meta name="description" content="Mahodadhi Homes Pvt. Ltd. is among the best real estate companies in Bhubaneswar, offering low-cost houses, 2BHK & 3BHK apartments, and RERA approved residential projects. Comfort, connectivity, and value — making dreams reality!">
     <meta property="og:title" content="Mahodadhi Homes – Premium Real Estate in Bhubaneswar, Odisha">

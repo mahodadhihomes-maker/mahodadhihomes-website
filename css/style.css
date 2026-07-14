@@ -537,7 +537,13 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
   z-index: 10;
   max-width: 700px;
-  padding-left: 8%;
+  padding: 44px 44px 44px 8%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.2) 100%);
+  border-radius: 28px;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.06);
 }
 
 /* Badge with pulsing dot */
@@ -718,7 +724,7 @@ h1, h2, h3, h4, h5, h6 {
 .hero-trust-badges {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 10px;
   margin-bottom: 40px;
   flex-wrap: wrap;
 }
@@ -729,8 +735,21 @@ h1, h2, h3, h4, h5, h6 {
   gap: 8px;
   color: #3a3a3d; /* Dark text for light-theme contrast */
   font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(178, 111, 45, 0.18);
+  padding: 8px 16px;
+  border-radius: 30px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.trust-badge:hover {
+  border-color: rgba(178, 111, 45, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(178, 111, 45, 0.12);
 }
 
 .trust-badge i {
@@ -739,9 +758,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .trust-divider {
-  width: 1px;
-  height: 16px;
-  background: rgba(0, 0, 0, 0.15); /* Dark divider for light theme */
+  display: none; /* Replaced by individual chip borders for a cleaner modern look */
 }
 
 /* Stats — glass cards */
@@ -823,11 +840,13 @@ h1, h2, h3, h4, h5, h6 {
 .scroll-mouse {
   width: 26px;
   height: 42px;
-  border: 2px solid rgba(0, 0, 0, 0.18);
+  border: 2px solid rgba(178, 111, 45, 0.4);
   border-radius: 14px;
   position: relative;
   display: flex;
   justify-content: center;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(6px);
 }
 
 .scroll-wheel {
@@ -846,7 +865,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .hero-scroll-indicator span {
   font-size: 11px;
-  color: rgba(0, 0, 0, 0.45);
+  color: #8d5723;
+  font-weight: 600;
   letter-spacing: 3px;
   text-transform: uppercase;
 }
@@ -2208,6 +2228,11 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0 20px;
     text-align: center;
     max-width: 100%;
+    background: none;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 
   .hero-subtitle {
@@ -2490,7 +2515,7 @@ h1, h2, h3, h4, h5, h6 {
 .js-enabled .hero-trust-badges,
 .js-enabled .hero-stats,
 .js-enabled .glass-card {
-  opacity: 1;
+  opacity: 1 !important;
 }
 
 /* Hover override for terracotta gold theme */
