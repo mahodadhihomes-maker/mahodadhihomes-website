@@ -1,180 +1,501 @@
 /**
- * Cinematic GLB hero scene. Kept self-contained so the page can degrade
- * gracefully when WebGL or an optional post-process pass is unavailable.
+ * Premium cinematic 3D real-estate hero
+ * Requires Three.js r128 + GLTFLoader + EffectComposer + UnrealBloomPass.
  */
+
 (function () {
   'use strict';
 
   var canvas = document.getElementById('hero-canvas');
-  if (!canvas || !window.THREE || !window.GLTFLoader) return;
 
-  var mobile = window.matchMedia('(max-width: 767px)').matches;
-  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: !mobile, alpha: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.25 : 1.75));
-  renderer.shadowMap.enabled = !mobile;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  // r128 exposes example utilities on THREE, not window.
+  if (!canvas || !window.THREE || !THREE.GLTFLoader) return;
+
+  var isMobile = window.matchMedia('(max-width: 767px)').matches;
+  var reducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches;
+
+  /* Renderer */
+  var renderer = new THREE.WebGLRenderer({
+    canvas: canvas,
+    antialias: !isMobile,
+    alpha: true,
+    powerPreference: 'high-performance'
+  });
+
+  renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio || 1, isMobile ? 1.25 : 1.75)
+  );
+  renderer.setSize(window.innerWidth, window.innerHeight, false);
   renderer.outputEncoding = THREE.sRGBEncoding;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.08;
+  renderer.shadowMap.enabled = !isMobile;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+  /* Scene */
   var scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x07101d, mobile ? 0.028 : 0.019);
-  var camera = new THREE.PerspectiveCamera(mobile ? 42 : 36, 1, 0.1, 80);
-  var target = new THREE.Vector3(2.7, 0.35, 0);
-  var mouse = new THREE.Vector2();
-  var smoothMouse = new THREE.Vector2();
+  scene.fog = new THREE.FogExp2(0x07101d, isMobile ? 0.03 : 0.018);
+
+  var camera = new THREE.PerspectiveCamera(
+    isMobile ? 42 : 36,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    100
+  );
+
+  var buildingRig = new THREE.Group();
+  buildingRig.position.set(isMobile ? 0 : 2.7, 0, 0);
+  scene.add(buildingRig);
+
+  var buildingModel = new THREE.Group();
+  buildingRig.add(buildingModel);
+
+  var mouse = new THREE.Vector2(0, 0);
+  var smoothMouse = new THREE.Vector2(0, 0);
+  var lookTarget = new THREE.Vector3();
   var scroll = { progress: 0 };
-  var hero = new THREE.Group();
-  var model = new THREE.Group();
-  hero.add(model);
-  scene.add(hero);
 
-  // A PMREM environment gives physically based materials a soft HDR-like studio reflection
-  // without imposing a remote HDR download on the first meaningful paint.
-  var envScene = new THREE.Scene();
-  envScene.background = new THREE.Color(0x152943);
-  var envKey = new THREE.DirectionalLight(0xffd0a0, 3.5); envKey.position.set(-4, 7, 4); envScene.add(envKey);
-  var envFill = new THREE.HemisphereLight(0x5d8cc4, 0x15100d, 2.2); envScene.add(envFill);
-  var pmrem = new THREE.PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(envScene, 0.04).texture;
-  pmrem.dispose();
+  /* Sky */
+  var sky = new THREE.Mesh(
+    new THREE.SphereGeometry(50, 32, 20),
+    new THREE.ShaderMaterial({
+      side: THREE.BackSide,
+      depthWrite: false,
+      uniforms: {
+        topColor: { value: new THREE.Color(0x06101d) },
+        horizonColor: { value: new THREE.Color(0x314b69) },
+        sunDirection: { value: new THREE.Vector3(-0.55, 0.25, -0.5) }
+      },
+      vertexShader:
+        'varying vec3 vWorldPosition;' +
+        'void main() {' +
+        ' vWorldPosition = normalize((modelMatrix * vec4(position, 1.0)).xyz);' +
+        ' gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);' +
+        '}',
+      fragmentShader:
+        'uniform vec3 topColor;' +
+        'uniform vec3 horizonColor;' +
+        'uniform vec3 sunDirection;' +
+        'varying vec3 vWorldPosition;' +
+        'void main() {' +
+        ' float horizon = smoothstep(-0.35, 0.8, vWorldPosition.y);' +
+        ' vec3 color = mix(horizonColor, topColor, horizon);' +
+        ' float sun = pow(max(dot(vWorldPosition, normalize(sunDirection)), 0.0), 18.0);' +
+        ' color += vec3(0.72, 0.34, 0.10) * sun * 0.32;' +
+        ' gl_FragColor = vec4(color, 1.0);' +
+        '}'
+    })
+  );
 
-  // Lighting: cool northern fill, low golden sun and a gentle architectural rim.
-  var hemi = new THREE.HemisphereLight(0x7195c4, 0x11131a, 1.25); scene.add(hemi);
-  var sun = new THREE.DirectionalLight(0xffbd77, 3.3); sun.position.set(-7, 8, 6); sun.castShadow = !mobile;
-  sun.shadow.mapSize.set(1024, 1024); sun.shadow.camera.left = -10; sun.shadow.camera.right = 10; sun.shadow.camera.top = 10; sun.shadow.camera.bottom = -10; scene.add(sun);
-  var rim = new THREE.DirectionalLight(0x7aa7e0, 2.1); rim.position.set(6, 3, -5); scene.add(rim);
-  var warmGlow = new THREE.PointLight(0xf0a74e, 2.2, 15, 2); warmGlow.position.set(2.7, 2.8, 3); scene.add(warmGlow);
+  scene.add(sky);
 
-  function makeSky() {
-    var sky = new THREE.Mesh(new THREE.SphereGeometry(45, 32, 18), new THREE.ShaderMaterial({
-      side: THREE.BackSide, depthWrite: false,
-      uniforms: { uTop: { value: new THREE.Color(0x05101e) }, uHorizon: { value: new THREE.Color(0x365474) }, uSun: { value: new THREE.Vector3(-0.55, 0.25, -0.6) } },
-      vertexShader: 'varying vec3 vWorld; void main(){vWorld=normalize((modelMatrix*vec4(position,1.)).xyz); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
-      fragmentShader: 'uniform vec3 uTop,uHorizon,uSun; varying vec3 vWorld; void main(){float h=smoothstep(-.35,.8,vWorld.y); vec3 c=mix(uHorizon,uTop,h); float s=pow(max(dot(vWorld,normalize(uSun)),0.),18.); c+=vec3(.85,.42,.14)*s*.34; gl_FragColor=vec4(c,1.);}'
-    }));
-    scene.add(sky);
+  /* Premium architectural lighting */
+  var hemisphere = new THREE.HemisphereLight(0x6f98c8, 0x101017, 1.3);
+  scene.add(hemisphere);
+
+  var sun = new THREE.DirectionalLight(0xffbc75, 3.4);
+  sun.position.set(-8, 9, 6);
+  sun.castShadow = !isMobile;
+  sun.shadow.mapSize.set(1024, 1024);
+  sun.shadow.camera.left = -10;
+  sun.shadow.camera.right = 10;
+  sun.shadow.camera.top = 10;
+  sun.shadow.camera.bottom = -10;
+  scene.add(sun);
+
+  var coolRim = new THREE.DirectionalLight(0x76a9e6, 2.1);
+  coolRim.position.set(7, 4, -6);
+  scene.add(coolRim);
+
+  var warmInteriorGlow = new THREE.PointLight(0xf3a94b, 2.4, 16, 2);
+  warmInteriorGlow.position.set(2.4, 3.2, 3);
+  scene.add(warmInteriorGlow);
+
+  /* Floating platform */
+  var platform = new THREE.Group();
+  platform.position.y = -2.15;
+  buildingRig.add(platform);
+
+  var plinth = new THREE.Mesh(
+    new THREE.CylinderGeometry(4.5, 4.9, 0.42, 96),
+    new THREE.MeshStandardMaterial({
+      color: 0x131d2b,
+      roughness: 0.3,
+      metalness: 0.72
+    })
+  );
+
+  plinth.castShadow = true;
+  plinth.receiveShadow = true;
+  platform.add(plinth);
+
+  var platformTop = new THREE.Mesh(
+    new THREE.CircleGeometry(4.38, 96),
+    new THREE.MeshStandardMaterial({
+      color: 0x1d2a39,
+      roughness: 0.42,
+      metalness: 0.35
+    })
+  );
+
+  platformTop.rotation.x = -Math.PI / 2;
+  platformTop.position.y = 0.225;
+  platformTop.receiveShadow = true;
+  platform.add(platformTop);
+
+  var goldRing = new THREE.Mesh(
+    new THREE.TorusGeometry(4.56, 0.025, 8, 96),
+    new THREE.MeshBasicMaterial({
+      color: 0xd6a55c,
+      transparent: true,
+      opacity: 0.82
+    })
+  );
+
+  goldRing.rotation.x = Math.PI / 2;
+  goldRing.position.y = 0.23;
+  platform.add(goldRing);
+
+  var contactShadow = new THREE.Mesh(
+    new THREE.CircleGeometry(3.2, 64),
+    new THREE.MeshBasicMaterial({
+      color: 0x020408,
+      transparent: true,
+      opacity: 0.48,
+      depthWrite: false
+    })
+  );
+
+  contactShadow.rotation.x = -Math.PI / 2;
+  contactShadow.position.y = 0.24;
+  contactShadow.scale.set(1, 0.42, 1);
+  platform.add(contactShadow);
+
+  /* Soft dust particles */
+  var particleCount = isMobile ? 55 : 170;
+  var particlePositions = new Float32Array(particleCount * 3);
+
+  for (var i = 0; i < particleCount; i++) {
+    particlePositions[i * 3] = (Math.random() - 0.5) * 18;
+    particlePositions[i * 3 + 1] = Math.random() * 10 - 3;
+    particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 15 - 3;
   }
-  makeSky();
 
-  // Floating platform, inset gold edge, contact shadow and a restrained architectural grid.
-  var platform = new THREE.Group(); platform.position.set(2.7, -2.15, 0); hero.add(platform);
-  var plinth = new THREE.Mesh(new THREE.CylinderGeometry(4.55, 4.9, 0.42, 96), new THREE.MeshStandardMaterial({ color: 0x111925, roughness: 0.32, metalness: 0.72, envMapIntensity: 1.4 }));
-  plinth.castShadow = plinth.receiveShadow = true; platform.add(plinth);
-  var edge = new THREE.Mesh(new THREE.TorusGeometry(4.57, 0.026, 8, 96), new THREE.MeshBasicMaterial({ color: 0xc99a58, transparent: true, opacity: 0.82 })); edge.rotation.x = Math.PI / 2; edge.position.y = 0.23; platform.add(edge);
-  var floor = new THREE.Mesh(new THREE.CircleGeometry(4.4, 96), new THREE.MeshStandardMaterial({ color: 0x182534, roughness: 0.46, metalness: 0.35 })); floor.rotation.x = -Math.PI / 2; floor.position.y = 0.225; floor.receiveShadow = true; platform.add(floor);
-  var shadow = new THREE.Mesh(new THREE.CircleGeometry(3.2, 64), new THREE.MeshBasicMaterial({ color: 0x02050a, transparent: true, opacity: 0.46, depthWrite: false })); shadow.rotation.x = -Math.PI / 2; shadow.position.y = 0.242; shadow.scale.set(1, .44, 1); platform.add(shadow);
-  var grid = new THREE.GridHelper(8.2, 14, 0x9b7544, 0x29405c); grid.position.set(2.7, -2.37, -0.05); grid.material.transparent = true; grid.material.opacity = 0.15; scene.add(grid);
+  var dustGeometry = new THREE.BufferGeometry();
+  dustGeometry.setAttribute(
+    'position',
+    new THREE.BufferAttribute(particlePositions, 3)
+  );
 
-  // Fine, slow-moving dust is deliberately non-additive: atmospheric rather than game-like.
-  var count = mobile ? 55 : 170, positions = new Float32Array(count * 3), seeds = new Float32Array(count);
-  for (var i = 0; i < count; i++) { positions[i * 3] = (Math.random() - .5) * 17; positions[i * 3 + 1] = Math.random() * 9 - 3; positions[i * 3 + 2] = (Math.random() - .5) * 12 - 4; seeds[i] = Math.random() * 6.28; }
-  var dustGeo = new THREE.BufferGeometry(); dustGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  var dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: 0xe6c58f, size: mobile ? .025 : .035, transparent: true, opacity: .58, depthWrite: false, sizeAttenuation: true })); scene.add(dust);
+  var dust = new THREE.Points(
+    dustGeometry,
+    new THREE.PointsMaterial({
+      color: 0xf0cf94,
+      size: isMobile ? 0.025 : 0.04,
+      transparent: true,
+      opacity: 0.58,
+      depthWrite: false
+    })
+  );
 
-  // Post processing is adaptive; bloom and anti-aliasing are skipped on small screens.
+  scene.add(dust);
+
+  /* Optional desktop bloom */
   var composer = null;
-  if (!mobile && window.EffectComposer && window.RenderPass && window.UnrealBloomPass) {
+
+  if (
+    !isMobile &&
+    THREE.EffectComposer &&
+    THREE.RenderPass &&
+    THREE.UnrealBloomPass
+  ) {
     composer = new THREE.EffectComposer(renderer);
     composer.addPass(new THREE.RenderPass(scene, camera));
-    var bloom = new THREE.UnrealBloomPass(new THREE.Vector2(1, 1), .34, .58, .82); composer.addPass(bloom);
-    if (window.ShaderPass && window.FXAAShader) { var fxaa = new THREE.ShaderPass(THREE.FXAAShader); composer.addPass(fxaa); composer.fxaaPass = fxaa; }
+
+    var bloom = new THREE.UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      0.32,
+      0.55,
+      0.84
+    );
+
+    composer.addPass(bloom);
+
+    if (THREE.ShaderPass && THREE.FXAAShader) {
+      var fxaa = new THREE.ShaderPass(THREE.FXAAShader);
+      composer.addPass(fxaa);
+      composer.fxaaPass = fxaa;
+    }
   }
 
-  function setMaterials(root) {
-    root.traverse(function (node) {
-      if (!node.isMesh) return;
-      node.castShadow = !mobile; node.receiveShadow = !mobile;
-      var materials = Array.isArray(node.material) ? node.material : [node.material];
-      materials.forEach(function (mat) {
-        if (!mat) return;
-        mat.envMapIntensity = 1.2;
-        mat.needsUpdate = true;
-        // Glass naturally picks up cool environment reflections; emissive windows stay warm.
-        if (mat.name && /glass|window/i.test(mat.name)) { mat.roughness = .14; mat.metalness = .2; mat.emissive = new THREE.Color(0x4b260c); mat.emissiveIntensity = .18; }
+  function makeMaterialsPremium(root) {
+    root.traverse(function (child) {
+      if (!child.isMesh) return;
+
+      child.castShadow = !isMobile;
+      child.receiveShadow = !isMobile;
+
+      var materials = Array.isArray(child.material)
+        ? child.material
+        : [child.material];
+
+      materials.forEach(function (material) {
+        if (!material) return;
+
+        material.envMapIntensity = 1.15;
+        material.needsUpdate = true;
+
+        if (material.name && /glass|window/i.test(material.name)) {
+          material.roughness = 0.13;
+          material.metalness = 0.2;
+          material.emissive = new THREE.Color(0x4b250a);
+          material.emissiveIntensity = 0.2;
+        }
       });
     });
   }
 
   function frameModel(object) {
-    model.add(object);
-    var box = new THREE.Box3().setFromObject(object), size = box.getSize(new THREE.Vector3()), center = box.getCenter(new THREE.Vector3());
-    object.position.sub(center); object.position.y += size.y * .5 - 1.92;
-    var longest = Math.max(size.x, size.y, size.z) || 1;
-    object.scale.setScalar(5.7 / longest);
+    buildingModel.add(object);
+
+    var box = new THREE.Box3().setFromObject(object);
+    var size = box.getSize(new THREE.Vector3());
+    var center = box.getCenter(new THREE.Vector3());
+
+    var largestSide = Math.max(size.x, size.y, size.z) || 1;
+    var scale = 5.6 / largestSide;
+
+    object.position.sub(center);
+    object.scale.setScalar(scale);
+
+    /* Rest the building naturally above the floating plinth */
+    object.position.y = -1.92 + size.y * scale * 0.5;
+
     canvas.classList.add('is-ready');
-    if (window.gsap) gsap.fromTo(model, { y: -1.0, scale: .92 }, { y: 0, scale: 1, duration: 2.1, ease: 'power4.out' });
-  }
-  var fallback = null;
-  function showImageFallback() {
-    if (fallback) return;
-    new THREE.TextureLoader().load('images/hero-building.jpg', function (texture) {
-      texture.encoding = THREE.sRGBEncoding;
-      var aspect = texture.image.width / texture.image.height;
-      fallback = new THREE.Mesh(
-        new THREE.PlaneGeometry(5.8 * aspect, 5.8),
-        new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: .94, depthWrite: false })
+
+    if (window.gsap) {
+      gsap.fromTo(
+        buildingModel,
+        { y: -0.8, scale: 0.92 },
+        { y: 0, scale: 1, duration: 2, ease: 'power4.out' }
       );
-      fallback.position.y = .5;
-      model.add(fallback);
-      canvas.classList.add('is-ready');
-    });
-  }
-  // A visible local preview prevents the hero from looking empty during the GLB download.
-  showImageFallback();
-  // building.glb in the source archive is an empty placeholder. Load the real local model.
-  new THREE.GLTFLoader().load('models/a7809272-ff56-4fc5-8afb-962eb625d9dc.glb', function (gltf) {
-    setMaterials(gltf.scene);
-    frameModel(gltf.scene);
-    if (fallback) {
-      var preview = fallback;
-      if (window.gsap) {
-        gsap.to(preview.material, { opacity: 0, duration: .45, onComplete: function () {
-          model.remove(preview); preview.geometry.dispose(); preview.material.dispose(); fallback = null;
-        } });
-      } else {
-        model.remove(preview); preview.geometry.dispose(); preview.material.dispose(); fallback = null;
-      }
     }
-  }, undefined, function () {
-    // Keep the hero polished even if a browser cannot decode the GLB.
-    showImageFallback();
-  });
+  }
+
+  /* Immediate image preview while the GLB loads */
+  var previewMesh = null;
+
+  function showPreview() {
+    if (previewMesh) return;
+
+    new THREE.TextureLoader().load(
+      'images/hero-building.jpg',
+      function (texture) {
+        texture.encoding = THREE.sRGBEncoding;
+
+        var aspect = texture.image.width / texture.image.height;
+
+        previewMesh = new THREE.Mesh(
+          new THREE.PlaneGeometry(5.9 * aspect, 5.9),
+          new THREE.MeshBasicMaterial({
+            map: texture,
+            transparent: true,
+            opacity: 0.96,
+            depthWrite: false
+          })
+        );
+
+        previewMesh.position.y = 0.45;
+        buildingModel.add(previewMesh);
+        canvas.classList.add('is-ready');
+      }
+    );
+  }
+
+  showPreview();
+
+  /* Your exact model filename */
+  new THREE.GLTFLoader().load(
+    'models/a7809272-ff56-4fc5-8afb-962eb625d9dc.glb',
+    function (gltf) {
+      makeMaterialsPremium(gltf.scene);
+      frameModel(gltf.scene);
+
+      if (previewMesh) {
+        var oldPreview = previewMesh;
+
+        if (window.gsap) {
+          gsap.to(oldPreview.material, {
+            opacity: 0,
+            duration: 0.45,
+            onComplete: function () {
+              buildingModel.remove(oldPreview);
+              oldPreview.geometry.dispose();
+              oldPreview.material.dispose();
+              previewMesh = null;
+            }
+          });
+        } else {
+          buildingModel.remove(oldPreview);
+          oldPreview.geometry.dispose();
+          oldPreview.material.dispose();
+          previewMesh = null;
+        }
+      }
+    },
+    undefined,
+    function () {
+      /* Preview remains visible if the model cannot load */
+      showPreview();
+    }
+  );
 
   function resize() {
-    mobile = window.matchMedia('(max-width: 767px)').matches;
-    var w = canvas.clientWidth || window.innerWidth, h = canvas.clientHeight || window.innerHeight;
-    camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h, false);
-    if (composer) { composer.setSize(w, h); if (composer.fxaaPass) composer.fxaaPass.material.uniforms.resolution.value.set(1 / (w * renderer.getPixelRatio()), 1 / (h * renderer.getPixelRatio())); }
+    isMobile = window.matchMedia('(max-width: 767px)').matches;
+
+    var width = canvas.clientWidth || window.innerWidth;
+    var height = canvas.clientHeight || window.innerHeight;
+
+    buildingRig.position.x = isMobile ? 0 : 2.7;
+
+    camera.aspect = width / height;
+    camera.fov = isMobile ? 42 : 36;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(width, height, false);
+
+    if (composer) {
+      composer.setSize(width, height);
+
+      if (composer.fxaaPass) {
+        composer.fxaaPass.material.uniforms.resolution.value.set(
+          1 / (width * renderer.getPixelRatio()),
+          1 / (height * renderer.getPixelRatio())
+        );
+      }
+    }
   }
-  resize(); window.addEventListener('resize', resize, { passive: true });
-  window.addEventListener('pointermove', function (event) { mouse.set(event.clientX / window.innerWidth * 2 - 1, -(event.clientY / window.innerHeight * 2 - 1)); }, { passive: true });
+
+  window.addEventListener('resize', resize, { passive: true });
+  resize();
+
+  window.addEventListener(
+    'pointermove',
+    function (event) {
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    },
+    { passive: true }
+  );
 
   if (window.gsap && window.ScrollTrigger) {
     gsap.registerPlugin(ScrollTrigger);
-    gsap.to(scroll, { progress: 1, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 } });
-    gsap.to('.hero-content', { opacity: 0, y: -48, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: '55% top', scrub: true } });
+
+    gsap.to(scroll, {
+      progress: 1,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#hero',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 1
+      }
+    });
+
+    gsap.to('.hero-content', {
+      opacity: 0,
+      y: -45,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#hero',
+        start: 'top top',
+        end: '55% top',
+        scrub: true
+      }
+    });
   }
 
-  var clock = new THREE.Clock(), raf, running = true;
-  function render() {
-    if (!running) return;
-    raf = requestAnimationFrame(render);
-    var t = clock.getElapsedTime();
-    smoothMouse.lerp(mouse, .035);
-    var orbit = mobile || reducedMotion ? 0 : Math.sin(t * .13) * .085; // under 5 degrees
-    hero.rotation.y += ((orbit + smoothMouse.x * .055 + scroll.progress * .16) - hero.rotation.y) * .028;
-    hero.rotation.x += ((mobile ? 0 : -smoothMouse.y * .022) - hero.rotation.x) * .026;
-    hero.position.y = Math.sin(t * .52) * (reducedMotion ? 0 : .055) + scroll.progress * .9;
-    platform.rotation.y = t * .035;
-    dust.rotation.y = t * .018; dust.position.y = Math.sin(t * .22) * .25;
-    sun.intensity = 3.15 + Math.sin(t * .18) * .2;
-    camera.position.set(mobile ? .1 : smoothMouse.x * .18, .15 + Math.sin(t * .17) * .12 + scroll.progress * 1.25, mobile ? 13.2 : 15.1 - scroll.progress * 1.65);
-    target.set(mobile ? 0 : 2.7, .05 + scroll.progress * .58, 0); camera.lookAt(target);
-    if (composer) composer.render(); else renderer.render(scene, camera);
+  var clock = new THREE.Clock();
+  var animationFrame;
+  var active = true;
+
+  function animate() {
+    if (!active) return;
+
+    animationFrame = requestAnimationFrame(animate);
+
+    var time = clock.getElapsedTime();
+
+    smoothMouse.lerp(mouse, 0.035);
+
+    /* Elegant camera-follow motion: always below 5 degrees */
+    var mouseRotation = isMobile || reducedMotion ? 0 : smoothMouse.x * 0.06;
+    var orbit = isMobile || reducedMotion ? 0 : Math.sin(time * 0.13) * 0.05;
+
+    buildingRig.rotation.y +=
+      (mouseRotation + orbit + scroll.progress * 0.12 - buildingRig.rotation.y) *
+      0.028;
+
+    buildingRig.rotation.x +=
+      ((isMobile ? 0 : -smoothMouse.y * 0.02) - buildingRig.rotation.x) * 0.028;
+
+    buildingRig.position.y =
+      Math.sin(time * 0.52) * (reducedMotion ? 0 : 0.055) +
+      scroll.progress * 0.85;
+
+    platform.rotation.y = time * 0.03;
+    dust.rotation.y = time * 0.017;
+    dust.position.y = Math.sin(time * 0.2) * 0.2;
+
+    sun.intensity = 3.2 + Math.sin(time * 0.18) * 0.18;
+
+    camera.position.set(
+      isMobile ? 0 : smoothMouse.x * 0.18,
+      0.15 + Math.sin(time * 0.17) * 0.1 + scroll.progress * 1.1,
+      isMobile ? 13.5 : 15 - scroll.progress * 1.5
+    );
+
+    lookTarget.set(
+      buildingRig.position.x,
+      0.08 + scroll.progress * 0.55,
+      0
+    );
+
+    camera.lookAt(lookTarget);
+
+    if (composer) {
+      composer.render();
+    } else {
+      renderer.render(scene, camera);
+    }
   }
-  render();
-  document.addEventListener('visibilitychange', function () { running = !document.hidden; if (running) { clock.getDelta(); render(); } });
-  window.destroyThreeScene = function () { running = false; cancelAnimationFrame(raf); window.removeEventListener('resize', resize); dustGeo.dispose(); renderer.dispose(); if (composer) composer.dispose(); };
+
+  animate();
+
+  document.addEventListener('visibilitychange', function () {
+    active = !document.hidden;
+
+    if (active) {
+      clock.getDelta();
+      animate();
+    }
+  });
+
+  window.destroyThreeScene = function () {
+    active = false;
+
+    if (animationFrame) {
+      cancelAnimationFrame(animationFrame);
+    }
+
+    window.removeEventListener('resize', resize);
+    dustGeometry.dispose();
+    renderer.dispose();
+
+    if (composer) {
+      composer.dispose();
+    }
+  };
 })();
