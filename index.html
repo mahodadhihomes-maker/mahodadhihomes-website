@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Global Error Catcher for Debugging -->
     <script>
+        document.documentElement.classList.add('js-enabled');
         window.onerror = function(message, source, lineno, colno, error) {
             var div = document.getElementById('debug-error-banner') || document.createElement('div');
             div.id = 'debug-error-banner';
@@ -69,6 +70,16 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
+    <!-- ============ PRELOADER INTRO SCREEN ============ -->
+    <div id="preloader">
+        <div class="preloader-content">
+            <img src="https://mahodadhihomes.com/front-assets/images/logo.png" alt="Mahodadhi Homes" class="preloader-logo">
+            <div class="preloader-line">
+                <div class="preloader-progress"></div>
+            </div>
+        </div>
+    </div>
 
     <!-- ============ HEADER / NAVBAR ============ -->
     <header id="header">
@@ -166,7 +177,7 @@
                         <span class="btn-shine"></span>
                     </a>
                     <a href="#contact" class="btn btn-outline btn-outline-hero" id="heroContactBtn">
-                        <i class="fas fa-phone-alt"></i>&nbsp; Contact Us
+                        <i class="fas fa-calendar-check"></i>&nbsp; Book Site Visit
                     </a>
                 </div>
 
@@ -783,11 +794,24 @@
     <!-- ============ SCRIPTS ============ -->
     <!-- Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+    
+    <!-- Postprocessing (UnrealBloomPass) dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/FXAAShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+
     <!-- GSAP & ScrollTrigger -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
     <!-- Custom JS -->
+    <script src="js/apartment-image.js"></script>
     <script src="js/three-scene.js"></script>
     <script src="js/main.js"></script>
     <script src="js/form.js"></script>
