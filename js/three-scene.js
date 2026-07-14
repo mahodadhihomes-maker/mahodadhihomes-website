@@ -106,7 +106,41 @@
     canvas.classList.add('is-ready');
     if (window.gsap) gsap.fromTo(model, { y: -1.0, scale: .92 }, { y: 0, scale: 1, duration: 2.1, ease: 'power4.out' });
   }
-  new THREE.GLTFLoader().load('models/building.glb', function (gltf) { setMaterials(gltf.scene); frameModel(gltf.scene); }, undefined, function () { canvas.classList.add('is-ready'); });
+  var fallback = null;
+  function showImageFallback() {
+    if (fallback) return;
+    new THREE.TextureLoader().load('images/hero-building.jpg', function (texture) {
+      texture.encoding = THREE.sRGBEncoding;
+      var aspect = texture.image.width / texture.image.height;
+      fallback = new THREE.Mesh(
+        new THREE.PlaneGeometry(5.8 * aspect, 5.8),
+        new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: .94, depthWrite: false })
+      );
+      fallback.position.y = .5;
+      model.add(fallback);
+      canvas.classList.add('is-ready');
+    });
+  }
+  // A visible local preview prevents the hero from looking empty during the GLB download.
+  showImageFallback();
+  // building.glb in the source archive is an empty placeholder. Load the real local model.
+  new THREE.GLTFLoader().load('models/11_Front-removebg-preview.glb', function (gltf) {
+    setMaterials(gltf.scene);
+    frameModel(gltf.scene);
+    if (fallback) {
+      var preview = fallback;
+      if (window.gsap) {
+        gsap.to(preview.material, { opacity: 0, duration: .45, onComplete: function () {
+          model.remove(preview); preview.geometry.dispose(); preview.material.dispose(); fallback = null;
+        } });
+      } else {
+        model.remove(preview); preview.geometry.dispose(); preview.material.dispose(); fallback = null;
+      }
+    }
+  }, undefined, function () {
+    // Keep the hero polished even if a browser cannot decode the GLB.
+    showImageFallback();
+  });
 
   function resize() {
     mobile = window.matchMedia('(max-width: 767px)').matches;

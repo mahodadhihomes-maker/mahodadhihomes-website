@@ -2464,7 +2464,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* FOUC Protection - Hide cinematic hero elements until GSAP initiates them */
+/* Keep essential hero content visible even when GSAP is delayed or unavailable. */
 .js-enabled .hero-badge,
 .js-enabled .hero-title-line,
 .js-enabled .hero-subtitle,
@@ -2472,7 +2472,7 @@ h1, h2, h3, h4, h5, h6 {
 .js-enabled .hero-trust-badges,
 .js-enabled .hero-stats,
 .js-enabled .glass-card {
-  opacity: 0;
+  opacity: 1;
 }
 
 /* Hover override for terracotta gold theme */
