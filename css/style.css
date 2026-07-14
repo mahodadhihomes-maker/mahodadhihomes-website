@@ -329,7 +329,7 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   padding-top: 90px; /* Offset for fixed transparent navbar */
   overflow: hidden;
-  background: linear-gradient(180deg, #090e18 0%, #141c2c 60%, #1d2538 100%); /* Dusk sky from apartment image */
+  background: linear-gradient(180deg, #ffffff 0%, #f8f4ec 55%, #f2ece0 100%); /* Soft white/cream daylight theme */
 }
 
 /* Animated gradient overlay */
@@ -340,10 +340,10 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
   height: 100%;
   background:
-    linear-gradient(90deg, rgba(9, 14, 24, 0.95) 0%, rgba(9, 14, 24, 0.65) 35%, rgba(9, 14, 24, 0.1) 60%, transparent 85%),
-    radial-gradient(ellipse at 20% 50%, rgba(178, 111, 45, 0.08) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 20%, rgba(43, 92, 143, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 60% 80%, rgba(255, 110, 50, 0.06) 0%, transparent 50%);
+    linear-gradient(90deg, rgba(255, 255, 255, 0.97) 0%, rgba(255, 255, 255, 0.8) 35%, rgba(255, 255, 255, 0.25) 60%, transparent 85%),
+    radial-gradient(ellipse at 20% 50%, rgba(178, 111, 45, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(43, 92, 143, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 80%, rgba(255, 110, 50, 0.04) 0%, transparent 50%);
   z-index: 3; /* Placed in front of the 3D canvas (z-index: 2) to ensure text legibility */
   animation: gradientShift 8s ease-in-out infinite alternate;
   pointer-events: none; /* Let clicks pass through to the canvas */
@@ -352,7 +352,7 @@ h1, h2, h3, h4, h5, h6 {
 @media (max-width: 768px) {
   .hero-gradient-overlay {
     background:
-      linear-gradient(180deg, rgba(9, 14, 24, 0.95) 0%, rgba(9, 14, 24, 0.75) 60%, rgba(9, 14, 24, 0.35) 100%);
+      linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(255, 255, 255, 0.85) 60%, rgba(255, 255, 255, 0.5) 100%);
   }
 }
 
@@ -546,9 +546,9 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   gap: 10px;
   padding: 10px 24px;
-  background: rgba(255, 255, 255, 0.05); /* Premium dark glassmorphism background */
+  background: rgba(178, 111, 45, 0.06); /* Soft gold-tinted glass background for light theme */
   border: 1px solid rgba(184, 144, 71, 0.45); /* Solid gold border */
-  color: #ebd39b; /* Brighter gold for dark theme readability */
+  color: #8d5723; /* Darker gold for readability on white */
   font-size: 13px;
   font-weight: 600;
   border-radius: 30px;
@@ -556,7 +556,7 @@ h1, h2, h3, h4, h5, h6 {
   text-transform: uppercase;
   margin-bottom: 16px; /* Reduced for layout breathing room */
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
 .badge-dot {
@@ -580,8 +580,8 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 800;
   line-height: 1.1;
   margin-bottom: 24px;
-  color: #ffffff; /* White text for dark mode contrast */
-  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+  color: #1d1d1f; /* Dark text for light-theme contrast */
+  text-shadow: none;
 }
 
 .hero-title-line {
@@ -591,10 +591,10 @@ h1, h2, h3, h4, h5, h6 {
 .hero-title-line:first-child {
   font-size: clamp(1.5rem, 3vw, 2.2rem);
   font-weight: 500;
-  color: #ffffff; /* White text */
+  color: #1d1d1f; /* Dark text */
   margin-bottom: 4px;
   letter-spacing: 1px;
-  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.6);
+  text-shadow: none;
 }
 
 .hero-title-highlight {
@@ -605,9 +605,9 @@ h1, h2, h3, h4, h5, h6 {
 .hero-title-small {
   font-size: clamp(1.2rem, 2.5vw, 1.8rem);
   font-weight: 400;
-  color: #e4e4e7; /* Light grey text */
+  color: #4a4a4d; /* Dark grey text */
   letter-spacing: 0.5px;
-  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.6);
+  text-shadow: none;
 }
 
 /* Shimmer gold text - Premium golden look for dark theme */
@@ -634,11 +634,11 @@ h1, h2, h3, h4, h5, h6 {
 
 .hero-subtitle {
   font-size: 17px;
-  color: #a1a1aa; /* Light grey text for high readability */
+  color: #55555a; /* Dark grey text for high readability on white */
   line-height: 1.8;
   margin-bottom: 32px;
   max-width: 520px;
-  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.7);
+  text-shadow: none;
 }
 
 /* CTA Buttons — enhanced */
@@ -683,9 +683,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-outline-hero {
-  border: 1px solid rgba(184, 144, 71, 0.45) !important; /* Premium gold border */
-  color: #ffffff !important; /* White text for dark mode readability */
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(184, 144, 71, 0.5) !important; /* Premium gold border */
+  color: #1d1d1f !important; /* Dark text for light-theme readability */
+  background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(10px);
 }
 
@@ -709,7 +709,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #e4e4e7; /* Light text for dark mode contrast */
+  color: #3a3a3d; /* Dark text for light-theme contrast */
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.5px;
@@ -723,7 +723,7 @@ h1, h2, h3, h4, h5, h6 {
 .trust-divider {
   width: 1px;
   height: 16px;
-  background: rgba(255, 255, 255, 0.15); /* Light divider for dark theme */
+  background: rgba(0, 0, 0, 0.15); /* Dark divider for light theme */
 }
 
 /* Stats — glass cards */
@@ -734,21 +734,21 @@ h1, h2, h3, h4, h5, h6 {
 
 .stat-item {
   text-align: center;
-  background: rgba(255, 255, 255, 0.04); /* Luxury dark glassmorphic card */
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.65); /* Light glassmorphic card */
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 16px;
   padding: 20px 28px;
   backdrop-filter: blur(16px);
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
   min-width: 130px;
 }
 
 .stat-item:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.9);
   border-color: rgba(184, 144, 71, 0.45); /* Gold highlight border on hover */
   transform: translateY(-4px);
-  box-shadow: 0 16px 45px rgba(184, 144, 71, 0.2);
+  box-shadow: 0 16px 45px rgba(184, 144, 71, 0.18);
 }
 
 .stat-icon-wrap {
@@ -768,7 +768,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-size: 2.2rem;
   font-weight: 800;
-  color: #ffffff; /* White text for dark mode readability */
+  color: #1d1d1f; /* Dark text for light-theme readability */
   display: inline-block;
   line-height: 1.2;
 }
@@ -782,7 +782,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .stat-label {
   font-size: 12px;
-  color: #a1a1aa; /* Light gray label for readability */
+  color: #6b6b70; /* Dark grey label for readability */
   text-transform: uppercase;
   letter-spacing: 1.5px;
   display: block;
@@ -847,14 +847,14 @@ h1, h2, h3, h4, h5, h6 {
 
 .glass-card {
   position: absolute;
-  background: rgba(14, 18, 26, 0.72); /* Luxury dark glassmorphism backdrop */
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.85); /* Light glassmorphism backdrop */
+  border: 1px solid rgba(0, 0, 0, 0.07);
   border-radius: 16px;
   padding: 16px 20px;
   width: 260px;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35), 0 5px 15px rgba(184, 144, 71, 0.05);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(184, 144, 71, 0.06);
   pointer-events: auto;
   transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), border-color 0.4s ease, box-shadow 0.4s ease;
   cursor: pointer;
@@ -959,21 +959,21 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-size: 14px;
   font-weight: 700;
-  color: #ffffff; /* White text for dark glass card */
+  color: #1d1d1f; /* Dark text for light glass card */
   margin: 0;
   line-height: 1.2;
 }
 
 .glass-card-header p {
   font-size: 11px;
-  color: #cbd5e1; /* Light grey text */
+  color: #5a5a5e; /* Dark grey text */
   margin: 2px 0 0 0;
   font-weight: 500;
 }
 
 .glass-card-desc {
   font-size: 11.5px;
-  color: #94a3b8; /* Muted light grey text */
+  color: #6b6b70; /* Muted dark grey text */
   line-height: 1.5;
   margin: 0;
 }

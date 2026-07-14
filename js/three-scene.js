@@ -36,7 +36,7 @@
 
   /* Scene */
   var scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x07101d, isMobile ? 0.03 : 0.018);
+  scene.fog = new THREE.FogExp2(0xf5f1e8, isMobile ? 0.03 : 0.018);
 
   var camera = new THREE.PerspectiveCamera(
     isMobile ? 42 : 36,
@@ -64,8 +64,8 @@
       side: THREE.BackSide,
       depthWrite: false,
       uniforms: {
-        topColor: { value: new THREE.Color(0x06101d) },
-        horizonColor: { value: new THREE.Color(0x314b69) },
+        topColor: { value: new THREE.Color(0xeef2f8) },
+        horizonColor: { value: new THREE.Color(0xf7f2e6) },
         sunDirection: { value: new THREE.Vector3(-0.55, 0.25, -0.5) }
       },
       vertexShader:
@@ -83,7 +83,7 @@
         ' float horizon = smoothstep(-0.35, 0.8, vWorldPosition.y);' +
         ' vec3 color = mix(horizonColor, topColor, horizon);' +
         ' float sun = pow(max(dot(vWorldPosition, normalize(sunDirection)), 0.0), 18.0);' +
-        ' color += vec3(0.72, 0.34, 0.10) * sun * 0.32;' +
+        ' color += vec3(1.0, 0.92, 0.75) * sun * 0.25;' +
         ' gl_FragColor = vec4(color, 1.0);' +
         '}'
     })
