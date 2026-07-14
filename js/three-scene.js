@@ -46,7 +46,7 @@
   );
 
   var buildingRig = new THREE.Group();
-  buildingRig.position.set(isMobile ? 0 : 2.7, 0, 0);
+  buildingRig.position.set(0, 0, 0);
   scene.add(buildingRig);
 
   var buildingModel = new THREE.Group();
@@ -265,7 +265,7 @@
     var center = box.getCenter(new THREE.Vector3());
 
     var largestSide = Math.max(size.x, size.y, size.z) || 1;
-    var scale = 5.6 / largestSide;
+    var scale = (isMobile ? 6.4 : 7.4) / largestSide;
 
     object.position.sub(center);
     object.scale.setScalar(scale);
@@ -284,71 +284,16 @@
     }
   }
 
-  /* Immediate image preview while the GLB loads */
-  var previewMesh = null;
-
-  function showPreview() {
-    if (previewMesh) return;
-
-    new THREE.TextureLoader().load(
-      'images/hero-building.jpg',
-      function (texture) {
-        texture.encoding = THREE.sRGBEncoding;
-
-        var aspect = texture.image.width / texture.image.height;
-
-        previewMesh = new THREE.Mesh(
-          new THREE.PlaneGeometry(5.9 * aspect, 5.9),
-          new THREE.MeshBasicMaterial({
-            map: texture,
-            transparent: true,
-            opacity: 0.96,
-            depthWrite: false
-          })
-        );
-
-        previewMesh.position.y = 0.45;
-        buildingModel.add(previewMesh);
-        canvas.classList.add('is-ready');
-      }
-    );
-  }
-
-  showPreview();
-
-  /* Your exact model filename */
+  /* Load the real 3D building model directly (no flat image fallback) */
   new THREE.GLTFLoader().load(
     'models/a7809272-ff56-4fc5-8afb-962eb625d9dc.glb',
     function (gltf) {
       makeMaterialsPremium(gltf.scene);
       frameModel(gltf.scene);
-
-      if (previewMesh) {
-        var oldPreview = previewMesh;
-
-        if (window.gsap) {
-          gsap.to(oldPreview.material, {
-            opacity: 0,
-            duration: 0.45,
-            onComplete: function () {
-              buildingModel.remove(oldPreview);
-              oldPreview.geometry.dispose();
-              oldPreview.material.dispose();
-              previewMesh = null;
-            }
-          });
-        } else {
-          buildingModel.remove(oldPreview);
-          oldPreview.geometry.dispose();
-          oldPreview.material.dispose();
-          previewMesh = null;
-        }
-      }
     },
     undefined,
-    function () {
-      /* Preview remains visible if the model cannot load */
-      showPreview();
+    function (error) {
+      console.error('Failed to load 3D building model:', error);
     }
   );
 
@@ -358,7 +303,7 @@
     var width = canvas.clientWidth || window.innerWidth;
     var height = canvas.clientHeight || window.innerHeight;
 
-    buildingRig.position.x = isMobile ? 0 : 2.7;
+    buildingRig.position.x = 0;
 
     camera.aspect = width / height;
     camera.fov = isMobile ? 42 : 36;
