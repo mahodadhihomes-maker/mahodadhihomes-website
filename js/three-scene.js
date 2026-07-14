@@ -30,13 +30,13 @@
   renderer.setSize(window.innerWidth, window.innerHeight, false);
   renderer.outputEncoding = THREE.sRGBEncoding;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.08;
+  renderer.toneMappingExposure = 1.18;
   renderer.shadowMap.enabled = !isMobile;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   /* Scene */
   var scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0xf5f1e8, isMobile ? 0.03 : 0.018);
+  scene.fog = new THREE.FogExp2(0xf5f1e8, isMobile ? 0.018 : 0.008);
 
   var camera = new THREE.PerspectiveCamera(
     isMobile ? 42 : 36,
